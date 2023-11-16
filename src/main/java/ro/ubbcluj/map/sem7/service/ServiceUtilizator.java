@@ -79,6 +79,15 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
             throw new UtilizatorExceptions("Nu exista niciun utilizator cu acest nume!\n");
         return list;
     }
+    public  Utilizator updateUtilziator(String nume, String prenume, Long ID) throws UtilizatorExceptions{
+        Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(nume, prenume, ID);
+
+        var returnUser = repo.update(util);
+        if(returnUser.isPresent())
+            throw new UtilizatorExceptions("Nu s-a putut actualiza!");
+        return null;
+
+    }
 
 //    /**
 //     * @param ID_entity

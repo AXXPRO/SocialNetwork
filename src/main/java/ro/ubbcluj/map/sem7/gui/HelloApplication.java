@@ -1,4 +1,4 @@
-package ro.ubbcluj.map.sem7;
+package ro.ubbcluj.map.sem7.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,7 @@ import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.validators.UtilizatorValidatorDetailed;
+import ro.ubbcluj.map.sem7.gui.UserTableController;
 import ro.ubbcluj.map.sem7.repository.FriendshipDBRepository;
 import ro.ubbcluj.map.sem7.repository.Repository;
 import ro.ubbcluj.map.sem7.repository.UserDBRepository;
@@ -47,7 +48,7 @@ public class HelloApplication extends Application {
         AnchorPane messageTaskLayout = messageLoader.load();
         primaryStage.setScene(new Scene(messageTaskLayout));
 
-        UserController messageTaskController = messageLoader.getController();
+        UserTableController messageTaskController = messageLoader.getController();
         messageTaskController.setMasterService(service);
 
     }

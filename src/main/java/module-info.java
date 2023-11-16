@@ -10,4 +10,7 @@ module ro.ubbcluj.map.sem7 {
     opens ro.ubbcluj.map.sem7.domain to javafx.base;
 
     exports ro.ubbcluj.map.sem7;
+    opens ro.ubbcluj.map.sem7.gui to javafx.fxml;
+    exports ro.ubbcluj.map.sem7.gui;
+
 }

@@ -5,20 +5,29 @@ import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.events.UserChangeEvent;
+import ro.ubbcluj.map.sem7.events.UserChanges;
+import ro.ubbcluj.map.sem7.observer.Observable;
+import ro.ubbcluj.map.sem7.observer.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MasterService {
+public class MasterService implements Observable<UserChangeEvent> {
     ServiceUtilizator serviceUtilizator;
     ServicePrietenie servicePrietenie;
+
+    ArrayList<Observer<UserChangeEvent>> userObservers = new ArrayList<>();
 
     public MasterService(ServiceUtilizator serviceUtilizator, ServicePrietenie servicePrietenie) {
         this.serviceUtilizator = serviceUtilizator;
         this.servicePrietenie = servicePrietenie;
+
     }
     public Utilizator addUtilizator(List<String> list) throws UtilizatorExceptions {
-       return serviceUtilizator.add(list);
+      var util = serviceUtilizator.add(list);
+      notifyObservers(new UserChangeEvent(UserChanges.ADD));
+      return util;
     }
     public ArrayList<Utilizator> findAllUsersMatching(String firstName, String lastName) throws UtilizatorExceptions{
         return serviceUtilizator.findAllMatching(firstName,lastName);
@@ -50,8 +59,10 @@ public class MasterService {
          */
     }
     public Utilizator deleteUser(Long ID) throws Exception {
-        removeAllFriends(ID);
-        return serviceUtilizator.delete(ID);
+        //removeAllFriends(ID);
+       var util = serviceUtilizator.delete(ID);
+        notifyObservers(new UserChangeEvent(UserChanges.DELETE));
+       return util;
     }
 
 
@@ -149,5 +160,29 @@ public class MasterService {
         return list;
     }
 
+    public  Utilizator updateUtilziator(String nume, String prenume, Long ID) throws UtilizatorExceptions
+    {
+        var util = serviceUtilizator.updateUtilziator(nume,prenume,ID);
+        notifyObservers(new UserChangeEvent(UserChanges.UPDATE));
+        return util;
+    }
+
+
+    @Override
+
+    public void addObserver(Observer<UserChangeEvent> e) {
+        userObservers.add(e);
+    }
+
+    @Override
+    public void removeObserver(Observer<UserChangeEvent> e) {
+        userObservers.remove(e);
+
+    }
+
+    @Override
+    public void notifyObservers(UserChangeEvent t) {
+       userObservers.forEach(observer -> observer.update(t));
+    }
 
 }

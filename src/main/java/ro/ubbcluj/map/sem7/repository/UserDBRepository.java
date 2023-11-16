@@ -120,19 +120,17 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     @Override
     public Optional<Utilizator> update(Utilizator entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement1 = connection.prepareStatement(
-                     " delete from users where id = ?");
-             PreparedStatement statement2 = connection.prepareStatement(
-                     " insert into users(first_name,last_name) VALUES (?,?)");
+             PreparedStatement statementUpdate = connection.prepareStatement(
+                     " update  users set first_name = ?, last_name = ? where id = ?");
         ) {
             var found = this.findOne(entity.getId());
             if(found.isEmpty())
                 return Optional.of(entity);
-            statement1.setInt(1, Math.toIntExact(entity.getId()));
-            statement2.setString(1, entity.getFirstName());
-            statement2.setString(2, entity.getLastName());
-            statement1.executeUpdate();
-            statement2.executeUpdate();
+            statementUpdate.setString(1, entity.getFirstName());
+            statementUpdate.setString(2, entity.getLastName());
+            statementUpdate.setLong(3, entity.getId());
+            statementUpdate.executeUpdate();
+            //statement2.executeUpdate();
 
             return Optional.empty();
 

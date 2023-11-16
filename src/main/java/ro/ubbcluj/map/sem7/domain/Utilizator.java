@@ -64,6 +64,9 @@ public class Utilizator extends Entity<Long> {
      * Schima al 2-lea nume al utilziatorului  cu lastName
      * @param lastName - al 2-lea nume al utilizatorului
      */
+    public String getFullName(){
+        return firstName+" "+lastName;
+    }
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -108,9 +111,8 @@ public class Utilizator extends Entity<Long> {
      */
     @Override
     public String toString() {
-        return  "ID='" + id + '\'' +
-                "|firstName='" + firstName + '\'' +
-                "|lastName='" + lastName + '\'';
+        return firstName +
+                " " + lastName;
     }
 
     /**
