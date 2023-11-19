@@ -3,6 +3,7 @@ package ro.ubbcluj.map.sem7.repository;
 import ro.ubbcluj.map.sem7.domain.Entity;
 import ro.ubbcluj.map.sem7.domain.validators.ValidationException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,7 +25,7 @@ public interface Repository<ID, E extends Entity<ID>> {
      *
      * @return all entities
      */
-    Iterable<E> findAll();
+    List<E> findAll();
     /**
      *
      * @param entity
@@ -64,4 +65,6 @@ public interface Repository<ID, E extends Entity<ID>> {
 
 
     public Optional<E> executeQuerry(String querry);
+
+    List<E> findAllFiltered(String numePrenumeFilter);
 }

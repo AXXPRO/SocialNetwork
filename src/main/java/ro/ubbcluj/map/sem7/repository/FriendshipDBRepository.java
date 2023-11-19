@@ -4,10 +4,9 @@ import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class FriendshipDBRepository implements Repository<Tuple<Long,Long>,Prietenie> {
 
@@ -36,6 +35,12 @@ private String password;
 
                 return Optional.empty();
         }
+
+        @Override
+        public List<Prietenie> findAllFiltered(String numePrenumeFilter) {
+                return null;
+        }
+
         @Override
         public Optional<Prietenie> findOne(Tuple<Long,Long> longID) {
                 try(Connection connection = DriverManager.getConnection(url, username, password);
@@ -64,8 +69,8 @@ private String password;
 
 
         @Override
-public Iterable<Prietenie> findAll() {
-        Set<Prietenie> users = new HashSet<>();
+public List<Prietenie> findAll() {
+        ArrayList<Prietenie> users = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement statement = connection.prepareStatement("select * from friendships");

@@ -234,6 +234,10 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
         return super.delete(ID);
     }
 
+    public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
+       return repo.findAllFiltered(numePrenumeFilter);
+    }
+
     /**
      *
      * @param ID - id-ul utilizatorului pe care il vrem

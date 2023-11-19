@@ -4,9 +4,7 @@ import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
 
 import java.sql.*;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class UserDBRepository implements Repository<Long, Utilizator> {
 
@@ -48,11 +46,11 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public Iterable<Utilizator> findAll() {
-        Set<Utilizator> users = new HashSet<>();
+    public List<Utilizator> findAll() {
+        ArrayList<Utilizator> users = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("select * from users");
+             PreparedStatement statement = connection.prepareStatement("select * from users order by first_name");
              ResultSet resultSet = statement.executeQuery()
         ) {
 
@@ -143,5 +141,36 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     @Override
     public Optional<Utilizator> executeQuerry(String querry) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
+
+        ArrayList<Utilizator> users = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+
+             PreparedStatement statement = connection.prepareStatement("select * from users where  CONCAT(first_name, ' ', last_name) LIKE ? order by first_name");
+
+        ) {
+
+            statement.setString(1,numePrenumeFilter+"%");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next())
+            {
+                Long id= resultSet.getLong("id");
+                String firstName=resultSet.getString("first_name");
+                String lastName=resultSet.getString("last_name");
+                Utilizator user=new Utilizator(firstName,lastName);
+                user.setId(id);
+                users.add(user);
+
+            }
+            return users;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

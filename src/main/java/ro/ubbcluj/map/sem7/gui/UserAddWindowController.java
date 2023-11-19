@@ -129,11 +129,8 @@ public class UserAddWindowController implements Observer<UserChangeEvent> {
         if(!prenumeFilter.isEmpty())
             numePrenumeFilter = numeFilter + " " + prenumeFilter;
         else numePrenumeFilter = numeFilter;
-        Iterable<Utilizator> users = service.findAllUsers();
-        List<Utilizator> usersList = StreamSupport.stream(users.spliterator(), false)
-                .filter(utilizator -> utilizator.getFullName().startsWith(numePrenumeFilter))
-                .collect(Collectors.toList());
-        model.setAll(usersList);
+        List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
+        model.setAll(usersFiltered);
     }
 
 //    public void handleSearchMessage(KeyEvent actionEvent){

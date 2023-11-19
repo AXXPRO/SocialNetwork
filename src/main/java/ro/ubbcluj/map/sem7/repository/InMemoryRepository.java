@@ -4,6 +4,7 @@ import ro.ubbcluj.map.sem7.domain.Entity;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,8 +25,8 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     }
 
     @Override
-    public Iterable<E> findAll() {
-        return entities.values();
+    public List<E> findAll() {
+        return entities.values().stream().toList();
     }
 
     @Override
@@ -69,5 +70,10 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     @Override
     public Optional<E> executeQuerry(String querry) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<E> findAllFiltered(String numePrenumeFilter) {
+        return null;
     }
 }

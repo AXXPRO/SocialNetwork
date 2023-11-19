@@ -54,7 +54,7 @@ public class UserTableController implements Observer<UserChangeEvent> {
 
     @FXML
     public void initialize() {
-        tableColumnUserID.setCellValueFactory(new PropertyValueFactory<Utilizator, Long>("id"));
+        //tableColumnUserID.setCellValueFactory(new PropertyValueFactory<Utilizator, Long>("id"));
         tableColumnNume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("firstName"));
         tableColumnPreunume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
 
@@ -62,11 +62,9 @@ public class UserTableController implements Observer<UserChangeEvent> {
     }
 
     private void initModel() {
-        Iterable<Utilizator> messages = service.findAllUsers();
-        List<Utilizator> messageTaskList = StreamSupport.stream(messages.spliterator(), false)
-                .filter(utilizator -> utilizator.getFullName().startsWith(numePrenumeFilter))
-                .collect(Collectors.toList());
-        model.setAll(messageTaskList);
+        List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
+
+        model.setAll(usersFiltered);
     }
 
     public void handleSearchMessage(KeyEvent actionEvent){

@@ -121,7 +121,7 @@ public class MasterService implements Observable<UserChangeEvent> {
         return G.componenteConexe();
 
     }
-    public Iterable<Utilizator> findAllUsers() {return serviceUtilizator.findAll();}
+    public List<Utilizator> findAllUsers() {return serviceUtilizator.findAll();}
     public String utilizatorDetaliat(long ID) throws UtilizatorExceptions {return null;}
 
     private String prietenieToString(Prietenie prietenie) {
@@ -185,4 +185,7 @@ public class MasterService implements Observable<UserChangeEvent> {
        userObservers.forEach(observer -> observer.update(t));
     }
 
+    public List<Utilizator> findAllUsersFiltered(String numePrenumeFilter) {
+       return serviceUtilizator.findAllFiltered(numePrenumeFilter);
+    }
 }

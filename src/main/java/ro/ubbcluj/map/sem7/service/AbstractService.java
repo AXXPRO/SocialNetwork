@@ -42,7 +42,7 @@ public abstract class AbstractService<ID, E extends Entity<ID>> implements Servi
      * @return all the elements
      */
     @Override
-    public Iterable<E> findAll() {
+    public List<E> findAll() {
         return repo.findAll();
     }
 
