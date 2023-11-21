@@ -4,6 +4,7 @@ import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UtilizatorFileRepository extends AbstractFileRepository<Long, Utilizator> {
 
@@ -23,5 +24,10 @@ public class UtilizatorFileRepository extends AbstractFileRepository<Long, Utili
     @Override
     protected String createEntityAsString(Utilizator entity) {
         return entity.getId()+";"+entity.getFirstName()+";"+entity.getLastName();
+    }
+
+    @Override
+    public Optional<Utilizator> tryLogin(String mail, String password) {
+        return Optional.empty();
     }
 }

@@ -27,8 +27,8 @@ public class UtiliziatorFactory {
      * @param ID - ID-ul unic al utilizatorului
      * @return Utilizator nou cu datele date
      */
-    public Utilizator getUtilizator(String firstName, String lastName, Long ID){
+    public Utilizator getUtilizator(String firstName, String lastName, String mail, String password, Long ID){
 
-        return new Utilizator(firstName,lastName,ID);
+        return new Utilizator(firstName,lastName, mail, password, ID);
     }
 }

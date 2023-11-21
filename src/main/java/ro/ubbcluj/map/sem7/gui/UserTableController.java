@@ -6,12 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
@@ -28,6 +27,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class UserTableController implements Observer<UserChangeEvent> {
+    public Button logInButton;
+    public Label errorLabel;
+    public PasswordField textFieldPassword;
+    public TextField textFieldMail;
+    public SplitPane adminPane;
+    public Pane loginPane;
     String numePrenumeFilter ="";
     public TextField searchField;
     MasterService service;
@@ -37,12 +42,13 @@ public class UserTableController implements Observer<UserChangeEvent> {
     @FXML
     TableView<Utilizator> tableView;
 
-    @FXML
-    TableColumn<Utilizator, Long> tableColumnUserID;
+
     @FXML
     TableColumn<Utilizator,String> tableColumnNume;
     @FXML
     TableColumn<Utilizator,String> tableColumnPreunume;
+    @FXML
+    TableColumn<Utilizator,String > tableColumnMail;
 
 
     public void setMasterService(MasterService servicePrimit) {
@@ -57,7 +63,7 @@ public class UserTableController implements Observer<UserChangeEvent> {
         //tableColumnUserID.setCellValueFactory(new PropertyValueFactory<Utilizator, Long>("id"));
         tableColumnNume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("firstName"));
         tableColumnPreunume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
-
+        tableColumnMail.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("mail"));
         tableView.setItems(model);
     }
 
@@ -65,6 +71,7 @@ public class UserTableController implements Observer<UserChangeEvent> {
         List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
 
         model.setAll(usersFiltered);
+        loginPane.setVisible(true);
     }
 
     public void handleSearchMessage(KeyEvent actionEvent){
@@ -129,5 +136,35 @@ public class UserTableController implements Observer<UserChangeEvent> {
     @Override
     public void update(UserChangeEvent userChangeEvent) {
         initModel();
+    }
+
+    public void handeLogInButton(ActionEvent event) {
+
+        String mail, password;
+        mail = textFieldMail.getText();
+        password = textFieldPassword.getText();
+        if(mail.equals("admin@fakemail.com"))
+        {
+            //VERY UNSAFE, NOT FOR ACTUAL USE, JUST TO NOT OVERCOMPLICATE FOR NOW
+            if(password.equals("admin"))
+            {
+                //ADMIN PRIVS
+                adminPane.setVisible(true);
+                loginPane.setVisible(false);
+            }
+            else {
+                errorLabel.setVisible(true);
+            }
+        }
+        else {
+
+            Long ID = service.tryLogin(mail, password);
+            if (ID < 0) {
+                errorLabel.setVisible(true);
+                return;
+            }
+            loginPane.setVisible(false);
+
+            }
     }
 }

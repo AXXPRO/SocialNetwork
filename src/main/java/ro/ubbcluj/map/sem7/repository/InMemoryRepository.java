@@ -76,4 +76,9 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     public List<E> findAllFiltered(String numePrenumeFilter) {
         return null;
     }
+
+    @Override
+    public Optional<E> tryLogin(String mail, String password) {
+        return Optional.empty();
+    }
 }

@@ -11,6 +11,8 @@ import java.util.Objects;
 public class Utilizator extends Entity<Long> {
     private String firstName;
     private String lastName;
+    private String mail;
+    private String password;
     private List<Utilizator> friends;
 
     /**
@@ -18,6 +20,16 @@ public class Utilizator extends Entity<Long> {
      * @param firstName - primul nume al utilizatorului
      * @param lastName - al 2-lea nume a utilziatorului
      */
+
+    public Utilizator(String firstName, String lastName,String mail, String password, Long ID) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+        this.password = password;
+        this.setId(ID);
+        friends= new ArrayList<>();
+
+    }
     public Utilizator(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,6 +48,22 @@ public class Utilizator extends Entity<Long> {
         this.firstName = firstName;
         this.lastName = lastName;
         friends= new ArrayList<>();
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -61,8 +89,8 @@ public class Utilizator extends Entity<Long> {
         return lastName;
     }
     /**
-     * Schima al 2-lea nume al utilziatorului  cu lastName
-     * @param lastName - al 2-lea nume al utilizatorului
+     *
+     *
      */
     public String getFullName(){
         return firstName+" "+lastName;

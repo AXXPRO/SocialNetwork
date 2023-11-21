@@ -8,6 +8,7 @@ import ro.ubbcluj.map.sem7.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
 
@@ -41,10 +42,13 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
 
     @Override
     public Utilizator add(List<String> list) throws UtilizatorExceptions{
-        String firstName, lastName;
+        String firstName, lastName,mail,password;
         firstName = list.get(0);
         lastName = list.get(1);
-        Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(firstName, lastName, LatestID);
+        mail = list.get(2);
+        password = list.get(3);
+
+        Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(firstName, lastName,mail,password, LatestID);
 
         if(repo.save(util).isPresent())
             throw new UtilizatorExceptions("Nu s-a putut adauga!\n");
@@ -79,8 +83,8 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
             throw new UtilizatorExceptions("Nu exista niciun utilizator cu acest nume!\n");
         return list;
     }
-    public  Utilizator updateUtilziator(String nume, String prenume, Long ID) throws UtilizatorExceptions{
-        Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(nume, prenume, ID);
+    public  Utilizator updateUtilziator(String nume, String prenume,String email, String password, Long ID) throws UtilizatorExceptions{
+        Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(nume, prenume,email, password, ID);
 
         var returnUser = repo.update(util);
         if(returnUser.isPresent())
@@ -147,8 +151,10 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
         if (!prietenie)
             throw new FriendshipException("Nu exista prietenie intre acestia doi!\n");
 
-        E1.removeFriend(UtiliziatorFactory.getInstance().getUtilizator(E2.getFirstName(), E2.getLastName(), E2.getId()));
-        E2.removeFriend(UtiliziatorFactory.getInstance().getUtilizator(E1.getFirstName(), E1.getLastName(), E1.getId()));
+        E1.removeFriend(UtiliziatorFactory.getInstance().getUtilizator(E2.getFirstName(), E2.getLastName(), E2.getMail(),
+                E2.getPassword(), E2.getId()));
+        E2.removeFriend(UtiliziatorFactory.getInstance().getUtilizator(E1.getFirstName(), E1.getLastName(), E1.getMail(),
+                E1.getPassword(), E1.getId()));
         repo.update(E1);
         repo.update(E2);
     }
@@ -236,6 +242,15 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
 
     public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
        return repo.findAllFiltered(numePrenumeFilter);
+    }
+
+    public Long tryLogin(String mail, String password) {
+
+       Optional<Utilizator> util = repo.tryLogin(mail, password);
+
+       if(util.isEmpty())
+           return -1L;
+       return util.get().getId();
     }
 
     /**

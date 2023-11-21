@@ -24,6 +24,9 @@ public class UserAddWindowController implements Observer<UserChangeEvent> {
 
     public TextField textFieldNume;
     public TextField textFieldPrenume;
+    public TextField textFieldMail;
+    public TextField textFieldPassword;
+
     public CheckBox updateCheckBox;
     public Button cancelButton;
     public Button updateButton;
@@ -77,7 +80,8 @@ public class UserAddWindowController implements Observer<UserChangeEvent> {
     {
         Utilizator selectat = comboBox.getValue();
         try {
-            service.updateUtilziator(textFieldNume.getText(), textFieldPrenume.getText(), selectat.getId());
+            service.updateUtilziator(textFieldNume.getText(), textFieldPrenume.getText(),textFieldMail.getText(),
+                    textFieldPassword.getText(),  selectat.getId());
         } catch (UtilizatorExceptions e) {
             System.out.println("Nu s-a putut fratele meu..");
         }
@@ -89,11 +93,15 @@ public class UserAddWindowController implements Observer<UserChangeEvent> {
     {
         String nume = textFieldNume.getText();
         String prenume = textFieldPrenume.getText();
+        String mail = textFieldMail.getText();
+        String password = textFieldPassword.getText();
 
         try {
             service.addUtilizator(new ArrayList<>(){{
                 add(nume);
                 add(prenume);
+                add(mail);
+                add(password);
             }});
             //update();
             ///Maybe show a message  here or somth

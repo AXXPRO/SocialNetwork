@@ -67,4 +67,6 @@ public interface Repository<ID, E extends Entity<ID>> {
     public Optional<E> executeQuerry(String querry);
 
     List<E> findAllFiltered(String numePrenumeFilter);
+
+    Optional<E> tryLogin(String mail, String password);
 }

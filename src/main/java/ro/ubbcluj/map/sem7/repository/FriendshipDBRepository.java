@@ -42,6 +42,11 @@ private String password;
         }
 
         @Override
+        public Optional<Prietenie> tryLogin(String mail, String password) {
+                return Optional.empty();
+        }
+
+        @Override
         public Optional<Prietenie> findOne(Tuple<Long,Long> longID) {
                 try(Connection connection = DriverManager.getConnection(url, username, password);
                     PreparedStatement statement = connection.prepareStatement("select * from friendships " +

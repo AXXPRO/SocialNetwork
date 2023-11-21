@@ -160,9 +160,9 @@ public class MasterService implements Observable<UserChangeEvent> {
         return list;
     }
 
-    public  Utilizator updateUtilziator(String nume, String prenume, Long ID) throws UtilizatorExceptions
+    public  Utilizator updateUtilziator(String nume, String prenume, String mail, String password, Long ID) throws UtilizatorExceptions
     {
-        var util = serviceUtilizator.updateUtilziator(nume,prenume,ID);
+        var util = serviceUtilizator.updateUtilziator(nume,prenume,mail,password,ID);
         notifyObservers(new UserChangeEvent(UserChanges.UPDATE));
         return util;
     }
@@ -187,5 +187,10 @@ public class MasterService implements Observable<UserChangeEvent> {
 
     public List<Utilizator> findAllUsersFiltered(String numePrenumeFilter) {
        return serviceUtilizator.findAllFiltered(numePrenumeFilter);
+    }
+
+    public Long tryLogin(String mail, String password) {
+        return serviceUtilizator.tryLogin(mail, password);
+
     }
 }

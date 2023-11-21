@@ -8,9 +8,9 @@ import java.util.*;
 
 public class UserDBRepository implements Repository<Long, Utilizator> {
 
-    private String url;
-    private String username;
-    private String password;
+    protected String url;
+    protected String username;
+    protected String password;
 
     private Validator<Utilizator> validator;
 
@@ -34,7 +34,9 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
             if(resultSet.next()) {
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
-                Utilizator u = new Utilizator(firstName,lastName);
+                String mail = resultSet.getString("mail");
+                String password = resultSet.getString("password");
+                Utilizator u = new Utilizator(firstName,lastName,mail,password,-1L);
                 u.setId(longID);
                 return Optional.ofNullable(u);
             }
@@ -59,9 +61,11 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
                 Long id= resultSet.getLong("id");
                 String firstName=resultSet.getString("first_name");
                 String lastName=resultSet.getString("last_name");
-                Utilizator user=new Utilizator(firstName,lastName);
-                user.setId(id);
-                users.add(user);
+                String mail = resultSet.getString("mail");
+                String password = resultSet.getString("password");
+                Utilizator u = new Utilizator(firstName,lastName,mail,password,-1L);
+                u.setId(id);
+                users.add(u);
 
             }
             return users;
@@ -76,10 +80,12 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     public Optional<Utilizator> save(Utilizator entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("insert" +
-                     " into users(first_name, last_name) VALUES (?,?)");
+                     " into users(first_name, last_name,mail,password) VALUES (?,?,?,?)");
         ) {
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
+            statement.setString(3, entity.getMail());
+            statement.setString(4, entity.getPassword());
             statement.executeUpdate();
 
             return Optional.empty();
@@ -119,14 +125,16 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     public Optional<Utilizator> update(Utilizator entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statementUpdate = connection.prepareStatement(
-                     " update  users set first_name = ?, last_name = ? where id = ?");
+                     " update  users set first_name = ?, last_name = ?, mail = ?, password = ? where id = ?");
         ) {
             var found = this.findOne(entity.getId());
             if(found.isEmpty())
                 return Optional.of(entity);
             statementUpdate.setString(1, entity.getFirstName());
             statementUpdate.setString(2, entity.getLastName());
-            statementUpdate.setLong(3, entity.getId());
+            statementUpdate.setString(3, entity.getMail());
+            statementUpdate.setString(4, entity.getPassword());
+            statementUpdate.setLong(5, entity.getId());
             statementUpdate.executeUpdate();
             //statement2.executeUpdate();
 
@@ -161,9 +169,11 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
                 Long id= resultSet.getLong("id");
                 String firstName=resultSet.getString("first_name");
                 String lastName=resultSet.getString("last_name");
-                Utilizator user=new Utilizator(firstName,lastName);
-                user.setId(id);
-                users.add(user);
+                String mail = resultSet.getString("mail");
+                String password = resultSet.getString("password");
+                Utilizator u = new Utilizator(firstName,lastName,mail,password,-1L);
+                u.setId(id);
+                users.add(u);
 
             }
             return users;
@@ -172,5 +182,32 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public Optional<Utilizator> tryLogin(String mailQuerry, String passwordQuerry) {
+        try(Connection connection = DriverManager.getConnection(url, username, password);
+            PreparedStatement statement = connection.prepareStatement("select * from users " +
+                    "where mail = ? AND password = ?");
+
+        ) {
+            statement.setString(1, mailQuerry);
+            statement.setString(2, passwordQuerry);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String mail = resultSet.getString("mail");
+                String password = resultSet.getString("password");
+                Long ID = resultSet.getLong("id");
+                Utilizator u = new Utilizator(firstName,lastName,mail,password,-1L);
+                u.setId(ID);
+                return Optional.ofNullable(u);
+            }
+        } catch (SQLException e) {
+            return Optional.empty();
+        }
+
+        return Optional.empty();
     }
 }
