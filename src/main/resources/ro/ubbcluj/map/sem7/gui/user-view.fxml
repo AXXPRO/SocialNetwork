@@ -50,7 +50,7 @@
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                     <children>
-                                        <TableView fx:id="tableView" editable="true" layoutX="164.0" layoutY="26.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="356.0" prefWidth="498.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
+                                        <TableView fx:id="tableView" editable="true" layoutX="164.0" layoutY="29.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="890.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
                                             <columns>
                                                 <TableColumn fx:id="tableColumnNume" prefWidth="75.0" text="Nume" />
                                                 <TableColumn fx:id="tableColumnPreunume" prefWidth="75.0" text="Prenume" />
@@ -63,8 +63,8 @@
                                  <font>
                                     <Font name="Arial Bold" size="13.0" />
                                  </font></Button>
-                              <TextField fx:id="searchField" layoutX="70.0" layoutY="1.0" onKeyTyped="#handleSearchMessage" />
-                              <ImageView fitHeight="25.0" fitWidth="34.0" layoutX="226.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                              <TextField fx:id="searchField" layoutX="107.0" layoutY="1.0" onKeyTyped="#handleSearchMessage" promptText="Search User" />
+                              <ImageView fitHeight="25.0" fitWidth="34.0" layoutX="75.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="C:\Users\Gabi\IdeaProjects\sem7\magnifying-glass-icon-11.png" />
                                  </image></ImageView>
