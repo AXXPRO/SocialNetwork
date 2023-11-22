@@ -1,8 +1,10 @@
 package ro.ubbcluj.map.sem7.repository;
 
 import ro.ubbcluj.map.sem7.domain.Entity;
+import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,5 +82,20 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     @Override
     public Optional<E> tryLogin(String mail, String password) {
         return Optional.empty();
+    }
+
+    @Override
+    public Long saveMessage(String  mesaj) {
+    return -1L;
+    }
+
+    @Override
+    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
+
+    }
+
+    @Override
+    public List<Message> getMessages(Long id1, Long id2) {
+        return null;
     }
 }

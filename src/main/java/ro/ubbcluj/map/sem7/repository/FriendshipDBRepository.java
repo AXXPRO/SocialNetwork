@@ -1,5 +1,6 @@
 package ro.ubbcluj.map.sem7.repository;
 
+import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 
@@ -47,6 +48,21 @@ private String password;
         }
 
         @Override
+        public Long saveMessage(String mesaj) {
+        return -1L;
+        }
+
+    @Override
+    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
+
+    }
+
+    @Override
+    public List<Message> getMessages(Long id1, Long id2) {
+        return null;
+    }
+
+    @Override
         public Optional<Prietenie> findOne(Tuple<Long,Long> longID) {
                 try(Connection connection = DriverManager.getConnection(url, username, password);
                     PreparedStatement statement = connection.prepareStatement("select * from friendships " +

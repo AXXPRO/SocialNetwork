@@ -9,35 +9,35 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
-import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.events.Event;
 import ro.ubbcluj.map.sem7.events.UserChangeEvent;
 import ro.ubbcluj.map.sem7.events.UserChanges;
 import ro.ubbcluj.map.sem7.observer.Observer;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-public class UserTableController implements Observer<UserChangeEvent> {
+public class UserTableController implements Observer<Event> {
     public Button logInButton;
     public Label errorLabel;
     public PasswordField textFieldPassword;
     public TextField textFieldMail;
     public SplitPane adminPane;
-    public Pane loginPane;
+
+    public Label LoginLabel;
     String numePrenumeFilter ="";
     public TextField searchField;
     MasterService service;
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
-
+    Stage adminStage;
+    LoginViewController loginViewController;
 
     @FXML
     TableView<Utilizator> tableView;
@@ -51,8 +51,11 @@ public class UserTableController implements Observer<UserChangeEvent> {
     TableColumn<Utilizator,String > tableColumnMail;
 
 
-    public void setMasterService(MasterService servicePrimit) {
+    public void setMasterService(MasterService servicePrimit, Stage stagePrimit, LoginViewController login) {
         service = servicePrimit;
+        adminStage = stagePrimit;
+        loginViewController = login;
+
         service.addObserver(this);
 
         initModel();
@@ -71,7 +74,7 @@ public class UserTableController implements Observer<UserChangeEvent> {
         List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
 
         model.setAll(usersFiltered);
-        loginPane.setVisible(true);
+//        loginPane.setVisible(true);
     }
 
     public void handleSearchMessage(KeyEvent actionEvent){
@@ -134,37 +137,48 @@ public class UserTableController implements Observer<UserChangeEvent> {
 
 
     @Override
-    public void update(UserChangeEvent userChangeEvent) {
+    public void update(Event userChangeEvent) {
         initModel();
     }
 
-    public void handeLogInButton(ActionEvent event) {
+    public void handleLogOut(ActionEvent event) {
+        adminStage.close();
+        model.clear();
+        loginViewController.initModel();
 
-        String mail, password;
-        mail = textFieldMail.getText();
-        password = textFieldPassword.getText();
-        if(mail.equals("admin@fakemail.com"))
-        {
-            //VERY UNSAFE, NOT FOR ACTUAL USE, JUST TO NOT OVERCOMPLICATE FOR NOW
-            if(password.equals("admin"))
-            {
-                //ADMIN PRIVS
-                adminPane.setVisible(true);
-                loginPane.setVisible(false);
-            }
-            else {
-                errorLabel.setVisible(true);
-            }
-        }
-        else {
-
-            Long ID = service.tryLogin(mail, password);
-            if (ID < 0) {
-                errorLabel.setVisible(true);
-                return;
-            }
-            loginPane.setVisible(false);
-
-            }
     }
+
+//    public void handleLogInLabel(MouseEvent event)
+//    {
+//        handleLogInButton(null);
+//    }
+//    public void handleLogInButton(ActionEvent event) {
+//
+//        String mail, password;
+//        mail = textFieldMail.getText();
+//        password = textFieldPassword.getText();
+//        if(mail.equals("admin@fakemail.com"))
+//        {
+//            //VERY UNSAFE, NOT FOR ACTUAL USE, JUST TO NOT OVERCOMPLICATE FOR NOW
+//            if(password.equals("admin"))
+//            {
+//                //ADMIN PRIVS
+//                adminPane.setVisible(true);
+//                loginPane.setVisible(false);
+//            }
+//            else {
+//                errorLabel.setVisible(true);
+//            }
+//        }
+//        else {
+//
+//            Long ID = service.tryLogin(mail, password);
+//            if (ID < 0) {
+//                errorLabel.setVisible(true);
+//                return;
+//            }
+//            loginPane.setVisible(false);
+//
+//            }
+//    }
 }

@@ -2,6 +2,7 @@ package ro.ubbcluj.map.sem7.repository;
 
 
 
+import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
 import ro.ubbcluj.map.sem7.paging.Page;
@@ -58,4 +59,6 @@ public class UserDBPagingRepository extends UserDBRepository  implements PagingR
 
 
     }
+
+
 }

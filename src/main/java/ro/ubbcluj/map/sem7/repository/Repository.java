@@ -1,8 +1,10 @@
 package ro.ubbcluj.map.sem7.repository;
 
 import ro.ubbcluj.map.sem7.domain.Entity;
+import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.validators.ValidationException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,4 +71,16 @@ public interface Repository<ID, E extends Entity<ID>> {
     List<E> findAllFiltered(String numePrenumeFilter);
 
     Optional<E> tryLogin(String mail, String password);
+
+    /**
+     *
+     * @param mesaj - mesajul ce trebuie trimis la utilziatorii specificati in mesaj
+     *              returns the ID of the created message
+     */
+    Long saveMessage(String mesaj);
+
+    void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage);
+
+    List<Message> getMessages(Long id1, Long id2);
+
 }

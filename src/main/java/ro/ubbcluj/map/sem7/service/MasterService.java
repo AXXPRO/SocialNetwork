@@ -5,6 +5,7 @@ import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.events.Event;
 import ro.ubbcluj.map.sem7.events.UserChangeEvent;
 import ro.ubbcluj.map.sem7.events.UserChanges;
 import ro.ubbcluj.map.sem7.observer.Observable;
@@ -13,11 +14,11 @@ import ro.ubbcluj.map.sem7.observer.Observer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MasterService implements Observable<UserChangeEvent> {
+public class MasterService implements Observable<Event> {
     ServiceUtilizator serviceUtilizator;
     ServicePrietenie servicePrietenie;
 
-    ArrayList<Observer<UserChangeEvent>> userObservers = new ArrayList<>();
+    ArrayList<Observer<Event>> userObservers = new ArrayList<>();
 
     public MasterService(ServiceUtilizator serviceUtilizator, ServicePrietenie servicePrietenie) {
         this.serviceUtilizator = serviceUtilizator;
@@ -170,18 +171,18 @@ public class MasterService implements Observable<UserChangeEvent> {
 
     @Override
 
-    public void addObserver(Observer<UserChangeEvent> e) {
+    public void addObserver(Observer<Event> e) {
         userObservers.add(e);
     }
 
     @Override
-    public void removeObserver(Observer<UserChangeEvent> e) {
+    public void removeObserver(Observer<Event> e) {
         userObservers.remove(e);
 
     }
 
     @Override
-    public void notifyObservers(UserChangeEvent t) {
+    public void notifyObservers(Event t) {
        userObservers.forEach(observer -> observer.update(t));
     }
 

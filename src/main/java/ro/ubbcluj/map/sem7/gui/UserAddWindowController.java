@@ -8,6 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.events.Event;
 import ro.ubbcluj.map.sem7.events.UserChangeEvent;
 import ro.ubbcluj.map.sem7.events.UserChanges;
 import ro.ubbcluj.map.sem7.observer.Observer;
@@ -17,10 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-public class UserAddWindowController implements Observer<UserChangeEvent> {
+public class UserAddWindowController implements Observer<Event> {
     String numePrenumeFilter ="";
     String numeFilter ="";
     String prenumeFilter = "";
+
+
 
     public TextField textFieldNume;
     public TextField textFieldPrenume;
@@ -197,7 +200,7 @@ public class UserAddWindowController implements Observer<UserChangeEvent> {
     }
 
     @Override
-    public void update(UserChangeEvent userChangeEvent) {
+    public void update(Event userChangeEvent) {
         initModel();
     }
 
