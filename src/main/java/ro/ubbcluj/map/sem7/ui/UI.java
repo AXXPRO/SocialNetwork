@@ -1,15 +1,15 @@
 package ro.ubbcluj.map.sem7.ui;
 
+import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.exceptions.FriendshipException;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.domain.validators.Validator;
-import ro.ubbcluj.map.sem7.repository.FriendshipDBRepository;
-import ro.ubbcluj.map.sem7.repository.Repository;
-import ro.ubbcluj.map.sem7.repository.UserDBRepository;
+import ro.ubbcluj.map.sem7.repository.*;
 import ro.ubbcluj.map.sem7.service.MasterService;
+import ro.ubbcluj.map.sem7.service.ServiceMessage;
 import ro.ubbcluj.map.sem7.service.ServicePrietenie;
 import ro.ubbcluj.map.sem7.service.ServiceUtilizator;
 
@@ -37,9 +37,11 @@ public class UI {
 
         String username = "postgres";
 
-        Repository<Long, Utilizator> UsersRepository = new UserDBRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password,validator);
+        Repository<Long, Utilizator> UsersRepository = new UserDBPagingRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password,validator);
+        Repository<Long, Message> MessageRepository = new MessageDBRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password);
         Repository<Tuple<Long, Long>, Prietenie> FriendshipRepository = new FriendshipDBRepository("jdbc:postgresql://localhost:5432/socialnetwork",username,password) ;
-        this.service = new MasterService(new ServiceUtilizator(UsersRepository), new ServicePrietenie(FriendshipRepository));
+        this.service = new MasterService(new ServiceUtilizator((UserDBPagingRepository) UsersRepository), new ServicePrietenie((FriendshipDBRepository) FriendshipRepository)
+        ,new ServiceMessage((MessageDBRepository) MessageRepository));
 
     }
 

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="398.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserAddWindowController">
+<AnchorPane prefHeight="398.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.AdminAddWindowController">
     <children>
       <ComboBox fx:id="comboBox" layoutX="39.0" layoutY="272.0" onAction="#comboBoxHandle" prefHeight="1.0" prefWidth="421.0" visible="false" />
         <GridPane hgap="5.0" layoutX="30.0" layoutY="6.0" prefHeight="266.0" prefWidth="439.0" vgap="5.0" AnchorPane.bottomAnchor="126.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="31.0" AnchorPane.topAnchor="6.0">

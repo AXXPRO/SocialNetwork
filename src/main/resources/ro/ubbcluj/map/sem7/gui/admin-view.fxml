@@ -9,7 +9,7 @@
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!--<?import javafx.scene.control.*?>-->
 <!--<?import javafx.scene.layout.*?>-->
-<!--<AnchorPane prefHeight="520.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserTableController">-->
+<!--<AnchorPane prefHeight="520.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.AdminController">-->
 <!--    <children>-->
 <!--        <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
 <!--            <items>-->
@@ -40,7 +40,7 @@
 <!--    </children>-->
 <!--</AnchorPane>-->
 
-<AnchorPane prefHeight="439.0" prefWidth="804.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserTableController">
+<AnchorPane prefHeight="439.0" prefWidth="804.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.AdminController">
     <children>
         <SplitPane fx:id="adminPane" dividerPositions="0.750965250965251" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>

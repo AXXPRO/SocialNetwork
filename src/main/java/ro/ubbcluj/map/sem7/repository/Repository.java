@@ -66,21 +66,21 @@ public interface Repository<ID, E extends Entity<ID>> {
     Optional<E> update(E entity);
 
 
-    public Optional<E> executeQuerry(String querry);
-
-    List<E> findAllFiltered(String numePrenumeFilter);
-
-    Optional<E> tryLogin(String mail, String password);
-
-    /**
-     *
-     * @param mesaj - mesajul ce trebuie trimis la utilziatorii specificati in mesaj
-     *              returns the ID of the created message
-     */
-    Long saveMessage(String mesaj);
-
-    void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage);
-
-    List<Message> getMessages(Long id1, Long id2);
+//    public Optional<E> executeQuerry(String querry);
+//
+//    List<E> findAllFiltered(String numePrenumeFilter);
+//
+//    Optional<E> tryLogin(String mail, String password);
+//
+//    /**
+//     *
+//     * @param mesaj - mesajul ce trebuie trimis la utilziatorii specificati in mesaj
+//     *              returns the ID of the created message
+//     */
+//    Long saveMessage(String mesaj);
+//
+//    void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage);
+//
+//    List<Message> getMessages(Long id1, Long id2);
 
 }

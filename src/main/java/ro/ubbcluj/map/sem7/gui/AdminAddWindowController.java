@@ -16,9 +16,8 @@ import ro.ubbcluj.map.sem7.service.MasterService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-public class UserAddWindowController implements Observer<Event> {
+
+public class AdminAddWindowController implements Observer<Event> {
     String numePrenumeFilter ="";
     String numeFilter ="";
     String prenumeFilter = "";

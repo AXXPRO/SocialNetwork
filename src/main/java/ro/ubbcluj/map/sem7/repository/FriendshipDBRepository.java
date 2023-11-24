@@ -37,30 +37,30 @@ private String password;
                 return Optional.empty();
         }
 
-        @Override
-        public List<Prietenie> findAllFiltered(String numePrenumeFilter) {
-                return null;
-        }
-
-        @Override
-        public Optional<Prietenie> tryLogin(String mail, String password) {
-                return Optional.empty();
-        }
-
-        @Override
-        public Long saveMessage(String mesaj) {
-        return -1L;
-        }
-
-    @Override
-    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
-
-    }
-
-    @Override
-    public List<Message> getMessages(Long id1, Long id2) {
-        return null;
-    }
+//        @Override
+//        public List<Prietenie> findAllFiltered(String numePrenumeFilter) {
+//                return null;
+//        }
+//
+//        @Override
+//        public Optional<Prietenie> tryLogin(String mail, String password) {
+//                return Optional.empty();
+//        }
+//
+//        @Override
+//        public Long saveMessage(String mesaj) {
+//        return -1L;
+//        }
+//
+//    @Override
+//    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
+//
+//    }
+//
+//    @Override
+//    public List<Message> getMessages(Long id1, Long id2) {
+//        return null;
+//    }
 
     @Override
         public Optional<Prietenie> findOne(Tuple<Long,Long> longID) {

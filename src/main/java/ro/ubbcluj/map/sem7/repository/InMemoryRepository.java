@@ -69,33 +69,33 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
 
     }
 
-    @Override
-    public Optional<E> executeQuerry(String querry) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<E> findAllFiltered(String numePrenumeFilter) {
-        return null;
-    }
-
-    @Override
-    public Optional<E> tryLogin(String mail, String password) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Long saveMessage(String  mesaj) {
-    return -1L;
-    }
-
-    @Override
-    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
-
-    }
-
-    @Override
-    public List<Message> getMessages(Long id1, Long id2) {
-        return null;
-    }
+//    @Override
+//    public Optional<E> executeQuerry(String querry) {
+//        return Optional.empty();
+//    }
+//
+//    @Override
+//    public List<E> findAllFiltered(String numePrenumeFilter) {
+//        return null;
+//    }
+//
+//    @Override
+//    public Optional<E> tryLogin(String mail, String password) {
+//        return Optional.empty();
+//    }
+//
+//    @Override
+//    public Long saveMessage(String  mesaj) {
+//    return -1L;
+//    }
+//
+//    @Override
+//    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
+//
+//    }
+//
+//    @Override
+//    public List<Message> getMessages(Long id1, Long id2) {
+//        return null;
+//    }
 }

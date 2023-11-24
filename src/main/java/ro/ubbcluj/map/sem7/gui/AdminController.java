@@ -9,22 +9,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
-import ro.ubbcluj.map.sem7.events.Event;
-import ro.ubbcluj.map.sem7.events.UserChangeEvent;
-import ro.ubbcluj.map.sem7.events.UserChanges;
+import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observer;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
 import java.io.IOException;
 import java.util.List;
 
-public class UserTableController implements Observer<Event> {
+public class AdminController implements Observer<Event> {
     public Button logInButton;
     public Label errorLabel;
     public PasswordField textFieldPassword;
@@ -37,7 +33,7 @@ public class UserTableController implements Observer<Event> {
     MasterService service;
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
     Stage adminStage;
-    LoginViewController loginViewController;
+ //   LoginViewController loginViewController;
 
     @FXML
     TableView<Utilizator> tableView;
@@ -51,10 +47,10 @@ public class UserTableController implements Observer<Event> {
     TableColumn<Utilizator,String > tableColumnMail;
 
 
-    public void setMasterService(MasterService servicePrimit, Stage stagePrimit, LoginViewController login) {
+    public void setMasterService(MasterService servicePrimit, Stage stagePrimit) {
         service = servicePrimit;
         adminStage = stagePrimit;
-        loginViewController = login;
+       // loginViewController = login;
 
         service.addObserver(this);
 
@@ -125,8 +121,8 @@ public class UserTableController implements Observer<Event> {
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
-            UserAddWindowController userAddWindowController = loader.getController();
-            userAddWindowController.setService(service, dialogStage);
+            AdminAddWindowController adminAddWindowController = loader.getController();
+            adminAddWindowController.setService(service, dialogStage);
 
             dialogStage.show();
 
@@ -144,7 +140,8 @@ public class UserTableController implements Observer<Event> {
     public void handleLogOut(ActionEvent event) {
         adminStage.close();
         model.clear();
-        loginViewController.initModel();
+        service.emitChange(new LoginEvent());
+      //  loginViewController.initModel();
 
     }
 

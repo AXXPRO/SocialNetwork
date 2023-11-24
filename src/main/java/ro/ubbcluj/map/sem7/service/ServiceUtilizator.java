@@ -5,6 +5,8 @@ import ro.ubbcluj.map.sem7.domain.UtiliziatorFactory;
 import ro.ubbcluj.map.sem7.domain.exceptions.FriendshipException;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.repository.Repository;
+import ro.ubbcluj.map.sem7.repository.UserDBPagingRepository;
+import ro.ubbcluj.map.sem7.repository.UserDBRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,16 @@ import java.util.Optional;
 public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
 
     long LatestID = 0;
+    UserDBPagingRepository repo;
 
 
     /**
      *
      * @param repo the repository used
      */
-    public ServiceUtilizator(Repository<Long, Utilizator> repo) {
+    public ServiceUtilizator(UserDBPagingRepository repo) {
         super(repo);
+        this.repo = repo;
         repo.findAll().forEach(util-> {
             if(util.getId() > LatestID)
                 LatestID = util.getId();
@@ -83,6 +87,7 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
             throw new UtilizatorExceptions("Nu exista niciun utilizator cu acest nume!\n");
         return list;
     }
+
     public  Utilizator updateUtilziator(String nume, String prenume,String email, String password, Long ID) throws UtilizatorExceptions{
         Utilizator util = UtiliziatorFactory.getInstance().getUtilizator(nume, prenume,email, password, ID);
 
@@ -244,13 +249,13 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
        return repo.findAllFiltered(numePrenumeFilter);
     }
 
-    public Long tryLogin(String mail, String password) {
+    public Utilizator tryLogin(String mail, String password) throws UtilizatorExceptions {
 
        Optional<Utilizator> util = repo.tryLogin(mail, password);
 
        if(util.isEmpty())
-           return -1L;
-       return util.get().getId();
+           throw new UtilizatorExceptions("No user Matching");
+       return util.get();
     }
 
     /**

@@ -13,7 +13,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import ro.ubbcluj.map.sem7.domain.Utilizator;
+import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.events.Event;
+import ro.ubbcluj.map.sem7.events.EventType;
 import ro.ubbcluj.map.sem7.observer.Observer;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
@@ -31,6 +34,8 @@ public class LoginViewController implements Observer<Event> {
     Stage loginStage;
     @Override
     public void update(Event event) {
+
+        if(event.getEventType() == EventType.LOGIN)
         initModel();
     }
 
@@ -55,6 +60,7 @@ public class LoginViewController implements Observer<Event> {
     public void initModel() {
 
         loginStage.show();
+        errorLabel.setVisible(false);
         textFieldPassword.setText("");
         textFieldMail.setText("");
 //        List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
@@ -63,31 +69,32 @@ public class LoginViewController implements Observer<Event> {
 //        loginPane.setVisible(true);
     }
 
-    public void showUserView() {
-//        try {
-//            // create a new stage for the popup dialog.
-//            FXMLLoader loader = new FXMLLoader();
-//            loader.setLocation(getClass().getResource("userAddWindow-view.fxml"));
-//
-//
-//            AnchorPane root = (AnchorPane) loader.load();
-//
-//            // Create the dialog Stage.
-//            Stage dialogStage = new Stage();
-//            dialogStage.setTitle("Update Users");
-//            dialogStage.initModality(Modality.WINDOW_MODAL);
-//            //dialogStage.initOwner(primaryStage);
-//            Scene scene = new Scene(root);
-//            dialogStage.setScene(scene);
-//
-//            UserAddWindowController userAddWindowController = loader.getController();
-//            userAddWindowController.setService(service, dialogStage);
-//
-//            dialogStage.show();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    public void showUserView(Utilizator user) {
+        try {
+            // create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("user-view.fxml"));
+
+
+            AnchorPane root = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("User Window");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            //dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            UserViewController viewController = loader.getController();
+            viewController.setMasterService(service, dialogStage,user);
+
+            dialogStage.show();
+            loginStage.hide();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -121,12 +128,14 @@ public class LoginViewController implements Observer<Event> {
         }
         else {
 
-            Long ID = service.tryLogin(mail, password);
-            if (ID < 0) {
+            try {
+                Utilizator user = service.tryLogin(mail, password);
+                showUserView(user);
+            } catch (UtilizatorExceptions e) {
                 errorLabel.setVisible(true);
-                return;
             }
-            showUserView();
+
+
           //  loginPane.setVisible(false);
 
         }
@@ -149,8 +158,8 @@ public class LoginViewController implements Observer<Event> {
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
-            UserTableController userAddWindowController = loader.getController();
-            userAddWindowController.setMasterService(service, dialogStage, this);
+            AdminController userAddWindowController = loader.getController();
+            userAddWindowController.setMasterService(service, dialogStage);
 
             dialogStage.show();
             loginStage.hide();

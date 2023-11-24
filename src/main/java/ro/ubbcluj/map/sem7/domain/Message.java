@@ -9,6 +9,7 @@ public class Message extends Entity<Long>{
     ArrayList<Long> toIDS;
     String message;
     LocalDateTime dateTime;
+    Message reply;
 
     public Message(Long aLong, Long fromID, ArrayList<Long> toIDS, String message, LocalDateTime dateTime) {
         super(aLong);
@@ -16,6 +17,21 @@ public class Message extends Entity<Long>{
         this.toIDS = toIDS;
         this.message = message;
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return
+                fromID +
+                ": "+ message;
+    }
+
+    public Message getReply() {
+        return reply;
+    }
+
+    public void setReply(Message reply) {
+        this.reply = reply;
     }
 
     public Long getFromID() {

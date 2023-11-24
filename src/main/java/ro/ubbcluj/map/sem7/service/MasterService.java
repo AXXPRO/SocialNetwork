@@ -1,11 +1,9 @@
 package ro.ubbcluj.map.sem7.service;
 
-import ro.ubbcluj.map.sem7.domain.GrafUtilizatori;
-import ro.ubbcluj.map.sem7.domain.Prietenie;
-import ro.ubbcluj.map.sem7.domain.Tuple;
-import ro.ubbcluj.map.sem7.domain.Utilizator;
+import ro.ubbcluj.map.sem7.domain.*;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.events.Event;
+import ro.ubbcluj.map.sem7.events.EventType;
 import ro.ubbcluj.map.sem7.events.UserChangeEvent;
 import ro.ubbcluj.map.sem7.events.UserChanges;
 import ro.ubbcluj.map.sem7.observer.Observable;
@@ -18,11 +16,15 @@ public class MasterService implements Observable<Event> {
     ServiceUtilizator serviceUtilizator;
     ServicePrietenie servicePrietenie;
 
+    ServiceMessage serviceMessage;
+
+
     ArrayList<Observer<Event>> userObservers = new ArrayList<>();
 
-    public MasterService(ServiceUtilizator serviceUtilizator, ServicePrietenie servicePrietenie) {
+    public MasterService(ServiceUtilizator serviceUtilizator, ServicePrietenie servicePrietenie,ServiceMessage serviceMessage) {
         this.serviceUtilizator = serviceUtilizator;
         this.servicePrietenie = servicePrietenie;
+        this.serviceMessage = serviceMessage;
 
     }
     public Utilizator addUtilizator(List<String> list) throws UtilizatorExceptions {
@@ -34,31 +36,31 @@ public class MasterService implements Observable<Event> {
         return serviceUtilizator.findAllMatching(firstName,lastName);
     }
 
-    private void removeAllFriends(Long ID){
-        String ID_str = ID.toString();
-       String querry = "delete from friendships where id1 = "+ ID_str+ " or id2 = "+ID_str;
-        servicePrietenie.executeQuerry(querry);
-        /*
-        ALTERNATIV, FARA QUERRY
-
-        ArrayList<Prietenie> removeFriends = new ArrayList<Prietenie>();
-        var friendsList = servicePrietenie.findAll();
-        for(var prieten : friendsList)
-        {
-            if(prieten.getId().getLeft().equals(ID) || prieten.getId().getRight().equals(ID))
-                removeFriends.add(prieten);
-        }
-        for(var prieten : removeFriends)
-        {
-            try {
-                servicePrietenie.delete(prieten.getId());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-         */
-    }
+//    private void removeAllFriends(Long ID){
+//        String ID_str = ID.toString();
+//       String querry = "delete from friendships where id1 = "+ ID_str+ " or id2 = "+ID_str;
+//        servicePrietenie.executeQuerry(querry);
+//        /*
+//        ALTERNATIV, FARA QUERRY
+//
+//        ArrayList<Prietenie> removeFriends = new ArrayList<Prietenie>();
+//        var friendsList = servicePrietenie.findAll();
+//        for(var prieten : friendsList)
+//        {
+//            if(prieten.getId().getLeft().equals(ID) || prieten.getId().getRight().equals(ID))
+//                removeFriends.add(prieten);
+//        }
+//        for(var prieten : removeFriends)
+//        {
+//            try {
+//                servicePrietenie.delete(prieten.getId());
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//        }
+//         */
+//    }
     public Utilizator deleteUser(Long ID) throws Exception {
         //removeAllFriends(ID);
        var util = serviceUtilizator.delete(ID);
@@ -67,6 +69,9 @@ public class MasterService implements Observable<Event> {
     }
 
 
+    public Message addMessage(List<String> list) throws Exception{
+        return serviceMessage.add(list);
+    }
     public Prietenie addFriend(List<String> list) throws UtilizatorExceptions{
         return servicePrietenie.add(list);
     }
@@ -190,8 +195,17 @@ public class MasterService implements Observable<Event> {
        return serviceUtilizator.findAllFiltered(numePrenumeFilter);
     }
 
-    public Long tryLogin(String mail, String password) {
+    public Utilizator tryLogin(String mail, String password) throws UtilizatorExceptions {
         return serviceUtilizator.tryLogin(mail, password);
 
+    }
+
+    public List<Message> getMessages(Long id1, Long id2){
+        return serviceMessage.getMessages(id1,id2);
+    }
+
+    public void emitChange(Event eventType) {
+
+        notifyObservers(eventType);
     }
 }

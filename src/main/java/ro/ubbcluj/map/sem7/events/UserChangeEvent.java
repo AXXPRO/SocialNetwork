@@ -8,8 +8,13 @@ public class UserChangeEvent implements Event{
         this.change = change;
     }
 
-    public UserChanges getEventType(){
+    public UserChanges getUserEventType(){
 
         return change;
     };
+
+    @Override
+    public EventType getEventType() {
+       return  EventType.USER;
+    }
 }

@@ -3,6 +3,7 @@ package ro.ubbcluj.map.sem7.service;
 import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.repository.FriendshipDBRepository;
 import ro.ubbcluj.map.sem7.repository.Repository;
 
 import java.time.LocalDateTime;
@@ -10,8 +11,10 @@ import java.util.List;
 
 public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prietenie>{
 
-    public ServicePrietenie(Repository<Tuple<Long,Long>,Prietenie> repo) {
+    FriendshipDBRepository repo;
+    public ServicePrietenie(FriendshipDBRepository repo) {
         super(repo);
+        this.repo = repo;
 
     }
 //    @Override
@@ -51,7 +54,7 @@ public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prieteni
     public Prietenie update(Prietenie entity) throws Exception {
         return null;
     }
-    public void executeQuerry(String querry){
-        repo.executeQuerry(querry);
-    }
+//    public void executeQuerry(String querry){
+//        repo.executeQuerry(querry);
+//    }
 }

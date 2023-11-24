@@ -26,8 +26,8 @@ public class UtilizatorFileRepository extends AbstractFileRepository<Long, Utili
         return entity.getId()+";"+entity.getFirstName()+";"+entity.getLastName();
     }
 
-    @Override
-    public Optional<Utilizator> tryLogin(String mail, String password) {
-        return Optional.empty();
-    }
+//    @Override
+//    public Optional<Utilizator> tryLogin(String mail, String password) {
+//        return Optional.empty();
+//    }
 }

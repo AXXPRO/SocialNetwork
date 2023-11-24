@@ -149,12 +149,12 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
 
     }
 
-    @Override
-    public Optional<Utilizator> executeQuerry(String querry) {
-        return Optional.empty();
-    }
+//    @Override
+//    public Optional<Utilizator> executeQuerry(String querry) {
+//        return Optional.empty();
+//    }
 
-    @Override
+
     public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
 
         ArrayList<Utilizator> users = new ArrayList<>();
@@ -187,7 +187,7 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
 
     }
 
-    @Override
+
     public Optional<Utilizator> tryLogin(String mailQuerry, String passwordQuerry) {
         try(Connection connection = DriverManager.getConnection(url, username, password);
             PreparedStatement statement = connection.prepareStatement("select * from users " +
@@ -214,75 +214,75 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
         return Optional.empty();
     }
 
-    @Override
-    public Long saveMessage(String mesaj) {
-        try(Connection connection = DriverManager.getConnection(url, username, password);
-            PreparedStatement statement = connection.prepareStatement("insert into message(mesaj) VALUES (?)RETURNING id");
-
-        ) {
-            statement.setString(1, mesaj);
-
-            ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getLong("id");
-            }
-        } catch (SQLException e) {
-            return -1L;
-        }
-
-        return -1L;
-    }
-
-    @Override
-    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("insert" +
-                     " into \"messageSent\"(\"idFrom\", \"idTo\", date, \"idMessage\") VALUES (?,?,?,?) ");
-        ) {
-            statement.setLong(1,id1);
-            statement.setLong(2,id2);
-            statement.setTimestamp(3,Timestamp.valueOf(date));
-            statement.setLong(4,idMessage);
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-
-    @Override
-    public List<Message> getMessages(Long id1, Long id2) {
-        ArrayList<Message> messages = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("select M.id as id, MS.\"idFrom\" as idFrom, " +
-                     " MS.\"idTo\" as idTo, MS.date as date, M.mesaj as mesaj from \"messageSent\" MS FULL JOIN" +
-                     " message M on MS.\"idMessage\" = M.id where (\"idFrom\" = ? and \"idTo\" = ?) or (\"idFrom\" = ? and \"idTo\" = ?) order by MS.date" );
-
-        ) {
-            statement.setLong(1, id1);
-            statement.setLong(2, id2);
-            statement.setLong(3, id2);
-            statement.setLong(4, id1);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next())
-            {
-                Long id= resultSet.getLong("id");
-                Long idFrom = resultSet.getLong("idFrom");
-                Long idTo = resultSet.getLong("idTo");
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
-                String mesaj = resultSet.getString("mesaj");
-
-                Message M = new Message(id,idFrom,new ArrayList<>(){{add(idTo);}},mesaj,date);
-               messages.add(M);
-
-            }
-            return messages;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    public Long saveMessage(String mesaj) {
+//        try(Connection connection = DriverManager.getConnection(url, username, password);
+//            PreparedStatement statement = connection.prepareStatement("insert into message(mesaj) VALUES (?)RETURNING id");
+//
+//        ) {
+//            statement.setString(1, mesaj);
+//
+//            ResultSet resultSet = statement.executeQuery();
+//            if(resultSet.next()) {
+//                return resultSet.getLong("id");
+//            }
+//        } catch (SQLException e) {
+//            return -1L;
+//        }
+//
+//        return -1L;
+//    }
+//
+//    @Override
+//    public void saveMessageSent(Long id1, Long id2, LocalDateTime date, Long idMessage) {
+//        try (Connection connection = DriverManager.getConnection(url, username, password);
+//             PreparedStatement statement = connection.prepareStatement("insert" +
+//                     " into \"messageSent\"(\"idFrom\", \"idTo\", date, \"idMessage\") VALUES (?,?,?,?) ");
+//        ) {
+//            statement.setLong(1,id1);
+//            statement.setLong(2,id2);
+//            statement.setTimestamp(3,Timestamp.valueOf(date));
+//            statement.setLong(4,idMessage);
+//            statement.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            System.out.println(e);
+//        }
+//    }
+//
+//    @Override
+//    public List<Message> getMessages(Long id1, Long id2) {
+//        ArrayList<Message> messages = new ArrayList<>();
+//
+//        try (Connection connection = DriverManager.getConnection(url, username, password);
+//             PreparedStatement statement = connection.prepareStatement("select M.id as id, MS.\"idFrom\" as idFrom, " +
+//                     " MS.\"idTo\" as idTo, MS.date as date, M.mesaj as mesaj from \"messageSent\" MS FULL JOIN" +
+//                     " message M on MS.\"idMessage\" = M.id where (\"idFrom\" = ? and \"idTo\" = ?) or (\"idFrom\" = ? and \"idTo\" = ?) order by MS.date" );
+//
+//        ) {
+//            statement.setLong(1, id1);
+//            statement.setLong(2, id2);
+//            statement.setLong(3, id2);
+//            statement.setLong(4, id1);
+//
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            while (resultSet.next())
+//            {
+//                Long id= resultSet.getLong("id");
+//                Long idFrom = resultSet.getLong("idFrom");
+//                Long idTo = resultSet.getLong("idTo");
+//                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+//                String mesaj = resultSet.getString("mesaj");
+//
+//                Message M = new Message(id,idFrom,new ArrayList<>(){{add(idTo);}},mesaj,date);
+//               messages.add(M);
+//
+//            }
+//            return messages;
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }
