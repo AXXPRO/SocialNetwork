@@ -54,6 +54,12 @@ public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prieteni
     public Prietenie update(Prietenie entity) throws Exception {
         return null;
     }
+
+    //Return a list of Friendships where first id is id, and second id is friend id
+    public List<Prietenie> findAllFriends(Long id) {
+
+      return   repo.findAllFriends(id);
+    }
 //    public void executeQuerry(String querry){
 //        repo.executeQuerry(querry);
 //    }

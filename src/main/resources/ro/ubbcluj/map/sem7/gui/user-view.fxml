@@ -2,10 +2,75 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserViewController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserViewController">
    <children>
-      <Label fx:id="labelUserName" layoutX="14.0" layoutY="14.0" prefHeight="48.0" prefWidth="86.0" text="Hello" />
+      <SplitPane dividerPositions="0.10014340344168259" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="111.0" prefWidth="598.0">
+               <children>
+                  <Label fx:id="labelUserName" layoutX="14.0" layoutY="7.0" prefHeight="41.0" prefWidth="249.0" text="Hello Lorem ipsum!">
+                     <font>
+                        <Font name="Arial Bold" size="17.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="friendsButton" layoutX="698.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="20.0" />
+                  <Button fx:id="requestsButton" layoutX="730.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="20.0" />
+                  <Button fx:id="logoutButton" layoutX="764.0" layoutY="15.0" mnemonicParsing="false" onAction="#handelLogOut" prefHeight="25.0" prefWidth="20.0" />
+              
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Pane fx:id="contactsPane" layoutX="-1.0" prefHeight="535.0" prefWidth="798.0">
+                     <children>
+                        <SplitPane dividerPositions="0.24865350089766605" prefHeight="434.0" prefWidth="798.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <ListView fx:id="friendsList" onMouseClicked="#handleConversationLoad" prefHeight="430.0" prefWidth="195.0" stylesheets="@userList.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="594.0">
+                                 <children>
+                                    <Pane fx:id="conversationPane" prefHeight="434.0" prefWidth="595.0">
+                                       <children>
+                                          <Label fx:id="friendUsername" layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="436.0" text="Lorem Ipsum" textAlignment="CENTER">
+                                             <font>
+                                                <Font size="28.0" />
+                                             </font>
+                                          </Label>
+                                          <SplitPane dividerPositions="0.8340716874748288" layoutY="78.0" orientation="VERTICAL" prefHeight="357.0" prefWidth="595.0">
+                                            <items>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                   <children>
+                                                      <TextArea fx:id="chatBox" editable="false" layoutX="-1.0" prefHeight="293.0" prefWidth="595.0" text="Fsdfdsfdsfsdfsdf" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </TextArea>
+                                                   </children>
+                                                </AnchorPane>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                   <children>
+                                                      <TextArea fx:id="sendTextArea" layoutX="14.0" layoutY="8.0" prefHeight="41.0" prefWidth="306.0" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="8.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </TextArea>
+                                                      <Button fx:id="sendButton" layoutX="537.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleSend" text="Send" />
+                                                   </children>
+                                                </AnchorPane>
+                                            </items>
+                                          </SplitPane>
+                                       </children></Pane>
+                                 </children></AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children></Pane>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
    </children>
 </AnchorPane>

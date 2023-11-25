@@ -208,4 +208,20 @@ public class MasterService implements Observable<Event> {
 
         notifyObservers(eventType);
     }
+
+    public List<Utilizator> findAllFriends(Long id) {
+
+
+        List<Prietenie> listaPrieteni = servicePrietenie.findAllFriends(id);
+        ArrayList<Utilizator> utilizatori = new ArrayList<>();
+        listaPrieteni.forEach(prietenie -> {
+            try {
+                utilizatori.add(serviceUtilizator.findOne(prietenie.getId().getRight()));
+            } catch (Exception e) {
+                throw new RuntimeException(e); //Not hapenning
+            }
+        });
+
+        return utilizatori;
+    }
 }

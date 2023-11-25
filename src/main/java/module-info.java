@@ -13,4 +13,5 @@ module ro.ubbcluj.map.sem7 {
     opens ro.ubbcluj.map.sem7.gui to javafx.fxml;
     exports ro.ubbcluj.map.sem7.gui;
 
+
 }

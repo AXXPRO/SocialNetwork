@@ -169,4 +169,32 @@ public Optional<Prietenie> delete(Tuple<Long,Long> aLong) {
 public Optional<Prietenie> update(Prietenie entity) {
         return Optional.of(entity);
         }
+
+    public List<Prietenie> findAllFriends(Long id) {
+            ArrayList<Prietenie> users = new ArrayList<>();
+
+            try (Connection connection = DriverManager.getConnection(url, username, password);
+                 PreparedStatement statement = connection.prepareStatement("select * from friendships where id1 = ?");
+
+            ) {
+                    statement.setLong(1, id);
+                    ResultSet resultSet = statement.executeQuery();
+                    while (resultSet.next())
+                    {
+                            Long id1 = resultSet.getLong("id1");
+                            Long id2 = resultSet.getLong("id2");
+                            LocalDateTime date =  resultSet.getDate("friendsfrom").toLocalDate().atStartOfDay();
+                            Prietenie prietenie=new Prietenie(date,id1,id2);
+
+                            prietenie.setId(new Tuple<Long,Long>(id1,id2));
+                            users.add(prietenie);
+
+                    }
+                    return users;
+
+            } catch (SQLException e) {
+                    throw new RuntimeException(e);
+            }
+
+    }
 }
