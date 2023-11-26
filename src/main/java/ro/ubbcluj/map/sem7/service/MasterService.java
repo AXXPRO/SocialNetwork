@@ -2,10 +2,7 @@ package ro.ubbcluj.map.sem7.service;
 
 import ro.ubbcluj.map.sem7.domain.*;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
-import ro.ubbcluj.map.sem7.events.Event;
-import ro.ubbcluj.map.sem7.events.EventType;
-import ro.ubbcluj.map.sem7.events.UserChangeEvent;
-import ro.ubbcluj.map.sem7.events.UserChanges;
+import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observable;
 import ro.ubbcluj.map.sem7.observer.Observer;
 
@@ -68,7 +65,9 @@ public class MasterService implements Observable<Event> {
        return util;
     }
 
-
+    public Prietenie addRequest(List<String> list) throws UtilizatorExceptions {
+        return servicePrietenie.addRequest(list);
+    }
     public Message addMessage(List<String> list) throws Exception{
         return serviceMessage.add(list);
     }
@@ -209,6 +208,19 @@ public class MasterService implements Observable<Event> {
         notifyObservers(eventType);
     }
 
+    public List<Utilizator> findAllFriendRequests(Long id){
+        List<Prietenie> listaPrieteni = servicePrietenie.findAllFriendRequests(id);
+        ArrayList<Utilizator> utilizatori = new ArrayList<>();
+        listaPrieteni.forEach(prietenie -> {
+            try {
+                utilizatori.add(serviceUtilizator.findOne(prietenie.getId().getLeft()));
+            } catch (Exception e) {
+                throw new RuntimeException(e); //Not hapenning
+            }
+        });
+
+        return utilizatori;
+    }
     public List<Utilizator> findAllFriends(Long id) {
 
 
@@ -223,5 +235,36 @@ public class MasterService implements Observable<Event> {
         });
 
         return utilizatori;
+    }
+
+    public void acceptRequest(Long id, Long id1) {
+        try {
+            servicePrietenie.delete(new Tuple<>(id, id1));
+            servicePrietenie.add(new ArrayList<>(){{
+                add(Long.toString(id));
+                add(Long.toString(id1));
+            }});
+            emitChange(new FriendshipEvent());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void denyRequest(Long id, Long id1) {
+        try {
+            servicePrietenie.delete(new Tuple<>(id, id1));
+            emitChange(new FriendshipEvent());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //returns prietenie de la id la id1
+    public Prietenie findFriendship(Long id, Long id1) {
+        try {
+           return servicePrietenie.findOne(new Tuple <>(id,id1));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -27,6 +27,18 @@ public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prieteni
 //        return null;
 //    }
 
+    public Prietenie addRequest(List<String> list)
+            throws UtilizatorExceptions {
+        Long id1, id2;
+        id1 =  Long.valueOf(list.get(0));
+        id2 =  Long.valueOf(list.get(1));
+        var currentDate = LocalDateTime.now();
+        Prietenie prietenie1 = new Prietenie(currentDate, id1,id2,"pending");
+
+        if(repo.save(prietenie1).isPresent())
+            throw new UtilizatorExceptions("Nu s-a putut adauga!\n");
+        return null;
+    }
     @Override
     public Prietenie add(List<String> list) throws UtilizatorExceptions {
         Long id1, id2;
@@ -59,6 +71,10 @@ public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prieteni
     public List<Prietenie> findAllFriends(Long id) {
 
       return   repo.findAllFriends(id);
+    }
+
+    public List<Prietenie> findAllFriendRequests(Long id) {
+        return repo.getPendingFriends(id);
     }
 //    public void executeQuerry(String querry){
 //        repo.executeQuerry(querry);

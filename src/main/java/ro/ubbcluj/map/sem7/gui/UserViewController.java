@@ -1,24 +1,25 @@
 package ro.ubbcluj.map.sem7.gui;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
-import ro.ubbcluj.map.sem7.events.Event;
-import ro.ubbcluj.map.sem7.events.EventType;
-import ro.ubbcluj.map.sem7.events.LoginEvent;
-import ro.ubbcluj.map.sem7.events.NewMessageEvent;
+import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observer;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
@@ -29,6 +30,7 @@ import java.util.List;
 public class UserViewController implements Observer<Event> {
 
     public Pane contactsPane;
+    public Pane requestsPane;
     public Button logoutButton;
     public Button requestsButton;
     public Button friendsButton;
@@ -39,8 +41,14 @@ public class UserViewController implements Observer<Event> {
     public Button sendButton;
     public TextArea sendTextArea;
     public Button messagEveryoneButton;
+    public GridPane gridPane;
+    public Label alreadyFriendsLabel;
+    public Button sendRequestButton;
+    public TextField searchRequestBar;
+    public ComboBox<Utilizator> friendRequestComboBox;
+    ArrayList<HBox> listaBox = new ArrayList<>();
 
-
+    ObservableList<Utilizator> modelUserRequests = FXCollections.observableArrayList();
     ObservableList<Utilizator> modelUserFriends = FXCollections.observableArrayList();
 
     MasterService service;
@@ -48,6 +56,7 @@ public class UserViewController implements Observer<Event> {
     Utilizator currentFriend;
     Stage userStage;
     public Label labelUserName;
+    private String numePrenumeFiltru="";
 
 
     public UserViewController(){
@@ -61,6 +70,16 @@ public class UserViewController implements Observer<Event> {
             chatBox.appendText(MSEvent.getNewMessage()+"\n");
             chatBox.setScrollTop(Double.MAX_VALUE);
         }
+        if(event.getEventType() == EventType.REQUESTPROCESSED)
+        {
+            loadFriendshipRequests();
+            initModel();
+        }
+        if( event.getEventType() == EventType.FRIENDSHIP)
+        {
+            initModel();
+        }
+
     }
 
     public void setMasterService(MasterService service, Stage dialogStage,Utilizator util) {
@@ -70,32 +89,57 @@ public class UserViewController implements Observer<Event> {
         // loginViewController = login;
 
         service.addObserver(this);
-
+        loadFriendshipRequests();
         initModel();
+    }
+    private void loadFriendshipRequests(){
+        listaBox.clear();
+        gridPane.getChildren().clear();
+
+        var frens = service.findAllFriendRequests(utilizator.getId());
+        frens.forEach(fren -> {
+                    var box = (new HBox());
+                    box.setSpacing(5);
+
+
+                    box.getChildren().add(new Label(fren.getFirstName() + " " + fren.getLastName()));
+                    Button buttonAccept = new Button("√");
+                    Button buttonDecline = new Button("X");
+
+
+                    buttonAccept.setOnAction(this::handleAcceptRequest);
+                    buttonAccept.setUserData(fren.getId());
+                    buttonDecline.setOnAction(this::handleDeclineRequest);
+                    buttonDecline.setUserData(fren.getId());
+                    box.getChildren().add(buttonAccept);
+                    box.getChildren().add(buttonDecline);
+
+                    box.setAlignment(Pos.CENTER_RIGHT);
+
+                    listaBox.add(box);
+                    gridPane.addRow(listaBox.indexOf(box), box);
+
+                }
+        );
     }
 
     private void initModel() {
         //Called multiple times
         labelUserName.setText("Hello " + utilizator.getFirstName() + " " + utilizator.getLastName() + "!");
         modelUserFriends.setAll(service.findAllFriends(utilizator.getId()));
-
-
-
-
+        modelUserRequests.setAll(service.findAllUsersFiltered(numePrenumeFiltru));
 
     }
     @FXML
     public void initialize(){
         //Called once
         friendsList.setItems(modelUserFriends);
+        friendRequestComboBox.setItems(modelUserRequests);
 
         chatBox.clear();
+        contactsPane.setVisible(true);
+        requestsPane.setVisible(false);
         conversationPane.setVisible(false);
-
-
-
-
-
 
     }
 
@@ -105,6 +149,21 @@ public class UserViewController implements Observer<Event> {
         service.emitChange(new LoginEvent());
     }
 
+    public void handleAcceptRequest(ActionEvent event){
+          Button trigger = (Button)event.getSource();
+          Long id = (Long) trigger.getUserData();
+          service.acceptRequest(id,utilizator.getId());
+          service.emitChange(new RequestProcessedEvent());
+
+    }
+
+    public void handleDeclineRequest(ActionEvent event) {
+         Button trigger = (Button)event.getSource();
+         Long id = (Long) trigger.getUserData();
+        service.denyRequest(id,utilizator.getId());
+        service.emitChange(new RequestProcessedEvent());
+
+    }
     public void handleConversationLoad(MouseEvent event) {
 
         if(!friendsList.getSelectionModel().isEmpty()) {
@@ -133,6 +192,7 @@ public class UserViewController implements Observer<Event> {
     public void handleSend(ActionEvent event) {
         String mesajDeTrimis = sendTextArea.getText();
         sendTextArea.clear();
+
         //From - to - mesaj
         try {
             service.addMessage(new ArrayList<>() {{
@@ -171,5 +231,60 @@ public class UserViewController implements Observer<Event> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleRequestsButton(ActionEvent event) {
+        contactsPane.setVisible(false);
+        requestsPane.setVisible(true);
+
+
+    }
+
+    public void handleFriendsButton(ActionEvent event) {
+
+      //  Button trigger = (Button)event.getSource();
+
+       // System.out.println(trigger.getUserData());
+        contactsPane.setVisible(true);
+        requestsPane.setVisible(false);
+    }
+
+    public void handleNameFilter(KeyEvent event) {
+        numePrenumeFiltru = searchRequestBar.getText();
+        modelUserRequests.setAll(service.findAllUsersFiltered(numePrenumeFiltru));
+    }
+
+    public void handleSendRequest(ActionEvent event) {
+        Utilizator util = friendRequestComboBox.getValue();
+        if(util != null){
+            try {
+                service.addRequest(new ArrayList<>(){{
+                    add(utilizator.getId().toString());
+                    add(util.getId().toString());
+                }});
+                friendRequestComboBox.getSelectionModel().clearSelection();
+            } catch (UtilizatorExceptions e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+    public void handleSelectedUser(ActionEvent event) {
+        Utilizator util = friendRequestComboBox.getValue();
+        if(util != null){
+            if(service.findFriendship(utilizator.getId(), util.getId()) != null || service.findFriendship(util.getId(), utilizator.getId()) != null
+            || utilizator.getId().equals(util.getId()))
+            {
+                alreadyFriendsLabel.setVisible(true);
+                sendRequestButton.setDisable(true);
+            }
+            else {
+                alreadyFriendsLabel.setVisible(false);
+                sendRequestButton.setDisable(false);
+            }
+        }
+
     }
 }

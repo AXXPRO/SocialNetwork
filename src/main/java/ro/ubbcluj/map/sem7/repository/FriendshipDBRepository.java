@@ -117,16 +117,18 @@ public List<Prietenie> findAll() {
 
         }
 
+
 @Override
 public Optional<Prietenie> save(Prietenie entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("insert" +
-                     " into friendships(id1,id2,friendsfrom) VALUES (?,?,?)");
+                     " into friendships(id1,id2,friendsfrom,status) VALUES (?,?,?,?)");
         ) {
                 statement.setInt(1, Math.toIntExact(entity.getId().getLeft()));
                 statement.setInt(2, Math.toIntExact(entity.getId().getRight()));
 
                 statement.setDate(3,  Date.valueOf(entity.getFriendsFrom().toLocalDate()));
+                statement.setString(4, entity.getStatus());
                 statement.executeUpdate();
 
                 return Optional.empty();
@@ -170,11 +172,38 @@ public Optional<Prietenie> update(Prietenie entity) {
         return Optional.of(entity);
         }
 
+   public List<Prietenie> getPendingFriends(Long id){
+           ArrayList<Prietenie> users = new ArrayList<>();
+
+           try (Connection connection = DriverManager.getConnection(url, username, password);
+                PreparedStatement statement = connection.prepareStatement("select * from friendships where id2 = ? and status = 'pending'");
+
+           ) {
+                   statement.setLong(1, id);
+                   ResultSet resultSet = statement.executeQuery();
+                   while (resultSet.next())
+                   {
+                           Long id1 = resultSet.getLong("id1");
+                           Long id2 = resultSet.getLong("id2");
+                           LocalDateTime date =  resultSet.getDate("friendsfrom").toLocalDate().atStartOfDay();
+                           Prietenie prietenie=new Prietenie(date,id1,id2);
+
+                           prietenie.setId(new Tuple<Long,Long>(id1,id2));
+                           users.add(prietenie);
+
+                   }
+                   return users;
+
+           } catch (SQLException e) {
+                   throw new RuntimeException(e);
+           }
+
+   }
     public List<Prietenie> findAllFriends(Long id) {
             ArrayList<Prietenie> users = new ArrayList<>();
 
             try (Connection connection = DriverManager.getConnection(url, username, password);
-                 PreparedStatement statement = connection.prepareStatement("select * from friendships where id1 = ?");
+                 PreparedStatement statement = connection.prepareStatement("select * from friendships where id1 = ? and status = 'accepted'");
 
             ) {
                     statement.setLong(1, id);
@@ -197,4 +226,6 @@ public Optional<Prietenie> update(Prietenie entity) {
             }
 
     }
+
+
 }
