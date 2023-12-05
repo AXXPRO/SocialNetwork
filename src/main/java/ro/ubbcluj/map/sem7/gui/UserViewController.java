@@ -10,10 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Message;
@@ -36,7 +34,7 @@ public class UserViewController implements Observer<Event> {
     public Button friendsButton;
     public ListView<Utilizator> friendsList;
     public Pane conversationPane;
-    public TextArea chatBox;
+ //   public TextArea chatBox;
     public Label friendUsername;
     public Button sendButton;
     public TextArea sendTextArea;
@@ -46,6 +44,9 @@ public class UserViewController implements Observer<Event> {
     public Button sendRequestButton;
     public TextField searchRequestBar;
     public ComboBox<Utilizator> friendRequestComboBox;
+    public ScrollPane scrollPane;
+    public VBox scrollVBox = new VBox();
+    public AnchorPane scrollAnchorPane;
     ArrayList<HBox> listaBox = new ArrayList<>();
 
     ObservableList<Utilizator> modelUserRequests = FXCollections.observableArrayList();
@@ -66,9 +67,11 @@ public class UserViewController implements Observer<Event> {
     @Override
     public void update(Event event) {
         if(event.getEventType() == EventType.NEWMESSAGE) {
-            NewMessageEvent MSEvent = (NewMessageEvent) event;
-            chatBox.appendText(MSEvent.getNewMessage()+"\n");
-            chatBox.setScrollTop(Double.MAX_VALUE);
+    //        NewMessageEvent MSEvent = (NewMessageEvent) event;
+
+            handleConversationLoad(null);
+    //        chatBox.appendText(MSEvent.getNewMessage()+"\n");
+     //       chatBox.setScrollTop(Double.MAX_VALUE);
         }
         if(event.getEventType() == EventType.REQUESTPROCESSED)
         {
@@ -91,6 +94,9 @@ public class UserViewController implements Observer<Event> {
         service.addObserver(this);
         loadFriendshipRequests();
         initModel();
+
+
+
     }
     private void loadFriendshipRequests(){
         listaBox.clear();
@@ -136,10 +142,15 @@ public class UserViewController implements Observer<Event> {
         friendsList.setItems(modelUserFriends);
         friendRequestComboBox.setItems(modelUserRequests);
 
-        chatBox.clear();
+     //   chatBox.clear();
         contactsPane.setVisible(true);
         requestsPane.setVisible(false);
         conversationPane.setVisible(false);
+        scrollVBox.setSpacing(5);
+        scrollPane.setContent(scrollVBox);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+
 
     }
 
@@ -166,27 +177,60 @@ public class UserViewController implements Observer<Event> {
     }
     public void handleConversationLoad(MouseEvent event) {
 
+
+
         if(!friendsList.getSelectionModel().isEmpty()) {
             conversationPane.setVisible(true);
-            chatBox.clear();
+         //   chatBox.clear();
+            scrollVBox.getChildren().clear();
 
             Utilizator friend = friendsList.getSelectionModel().getSelectedItem();
             currentFriend = friend;
             friendUsername.setText(friend.getFirstName() + " " + friend.getLastName());
             List<Message> mesaje = service.getMessages(utilizator.getId(), friend.getId());
+
             mesaje.forEach(mesaj -> {
+                HBox HBoxCurrent = new HBox();
+                Region spacer= new Region();
+                spacer.setMinWidth(scrollPane.getWidth()/2);
                 if (mesaj.getFromID().equals(utilizator.getId()))
-                    chatBox.appendText(utilizator.getLastName() + ": " + mesaj.getMessage() + "\n");
+                {//    chatBox.appendText(utilizator.getLastName() + ": " + mesaj.getMessage() + "\n");
+                    HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
+                    Label currentLabel = new Label( mesaj.getMessage() );
+
+                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #d27514;  -fx-text-fill: #000000;   -fx-background-radius: 10;");
+                    currentLabel.setWrapText(true);
+                    HBoxCurrent.getChildren().addAll( spacer, currentLabel);
+                    HBoxCurrent.setAlignment(Pos.CENTER_RIGHT);
+
+
+                    scrollVBox.getChildren().add(HBoxCurrent);
+                }
                 else {
-                    chatBox.appendText(currentFriend.getLastName() + ": " + mesaj.getMessage() + "\n");
+                    //chatBox.appendText(currentFriend.getLastName() + ": " + mesaj.getMessage() + "\n");
+                    HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
+                    Label currentLabel = new Label( mesaj.getMessage());
+                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #eada6d;  -fx-text-fill: #000000;   -fx-background-radius: 10;");
+                    currentLabel.setWrapText(true);
+                    HBoxCurrent.getChildren().addAll(currentLabel, spacer);
+                    scrollVBox.getChildren().add(HBoxCurrent);
                 }
             });
 
-            chatBox.setScrollTop(Double.MAX_VALUE);
+          //  chatBox.setScrollTop(Double.MAX_VALUE);
 
         }
 
-
+//
+//        Label testLabel = new Label("HEEEY");
+//        Label testLabel2 = new Label("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEY2");
+//        testLabel2.setWrapText(true);
+//        testLabel.setFont(new Font(20));
+//        //HBox hboxtest = new HBox();
+//        hboxtest.setPrefWidth(scrollPane.getWidth());
+//        scrollVBox.getChildren().add(hboxtest);
+//
+//        hboxtest.getChildren().addAll(  testLabel2,spacer1);
     }
 
     public void handleSend(ActionEvent event) {
