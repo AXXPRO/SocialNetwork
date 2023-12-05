@@ -83,7 +83,7 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     public Optional<Utilizator> save(Utilizator entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("insert" +
-                     " into users(first_name, last_name,mail,password) VALUES (?,?,?,?)");
+                     " into users(first_name, last_name,mail,password) VALUES (?,?,?, crypt(?, gen_salt('bf')))");
         ) {
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
@@ -128,7 +128,7 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     public Optional<Utilizator> update(Utilizator entity) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statementUpdate = connection.prepareStatement(
-                     " update  users set first_name = ?, last_name = ?, mail = ?, password = ? where id = ?");
+                     " update  users set first_name = ?, last_name = ?, mail = ?, password =  crypt(?, gen_salt('bf')) where id = ?");
         ) {
             var found = this.findOne(entity.getId());
             if(found.isEmpty())
@@ -191,7 +191,7 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
     public Optional<Utilizator> tryLogin(String mailQuerry, String passwordQuerry) {
         try(Connection connection = DriverManager.getConnection(url, username, password);
             PreparedStatement statement = connection.prepareStatement("select * from users " +
-                    "where mail = ? AND password = ?");
+                    "where mail = ? AND password = crypt(?, password);");
 
         ) {
             statement.setString(1, mailQuerry);

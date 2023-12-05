@@ -1,0 +1,20 @@
+.button {
+
+    -fx-background-color: linear-gradient(to right, white, lightblue);
+
+}
+.label{
+    -fx-font-family: Consolas;
+
+    -fx-text-fill: white;
+
+    -fx-stroke-width: 1.5;
+    -fx-stroke: black;
+
+
+}
+.pane_sheet {
+    -fx-background-color: linear-gradient(to bottom, #3b0101, #4d0202);
+
+
+}

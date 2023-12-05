@@ -42,7 +42,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <Pane fx:id="contactsPane" layoutX="-1.0" prefHeight="535.0" prefWidth="798.0" visible="false">
+                  <Pane fx:id="contactsPane" layoutX="-1.0" prefHeight="535.0" prefWidth="798.0">
                      <children>
                         <SplitPane dividerPositions="0.24865350089766605" prefHeight="434.0" prefWidth="798.0">
                           <items>
@@ -89,7 +89,7 @@
                         </SplitPane>
                         <Button fx:id="messagEveryoneButton" layoutX="34.0" layoutY="471.0" mnemonicParsing="false" onAction="#handleMessageEveryone" text="Message Everyone" />
                      </children></Pane>
-                  <Pane fx:id="requestsPane" prefHeight="535.0" prefWidth="798.0">
+                  <Pane fx:id="requestsPane" prefHeight="535.0" prefWidth="798.0" visible="false">
                      <children>
                         <SplitPane dividerPositions="0.32144355853965595" prefHeight="535.0" prefWidth="797.0">
                           <items>
@@ -116,7 +116,7 @@
                                     <ComboBox fx:id="friendRequestComboBox" layoutX="98.0" layoutY="127.0" onAction="#handleSelectedUser" prefHeight="25.0" prefWidth="341.0" promptText="Alege utilizator.." />
                                     <TextField fx:id="searchRequestBar" layoutX="98.0" layoutY="90.0" onKeyTyped="#handleNameFilter" prefHeight="25.0" prefWidth="341.0" promptText="Search..." />
                                     <Button fx:id="sendRequestButton" layoutX="223.0" layoutY="202.0" mnemonicParsing="false" onAction="#handleSendRequest" text="Trimite cerere" />
-                                    <Label fx:id="alreadyFriendsLabel" layoutX="222.0" layoutY="178.0" text="Sunt deja prieteni" visible="false" />
+                                    <Label fx:id="alreadyFriendsLabel" layoutX="154.0" layoutY="176.0" text="Sunt deja prieteni sau este o cerere trimisa." visible="false" />
                                  </children></AnchorPane>
                           </items>
                         </SplitPane>
