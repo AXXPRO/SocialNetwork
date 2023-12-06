@@ -1,5 +1,6 @@
 package ro.ubbcluj.map.sem7.gui;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -24,6 +26,7 @@ import ro.ubbcluj.map.sem7.service.MasterService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class UserViewController implements Observer<Event> {
 
@@ -47,6 +50,7 @@ public class UserViewController implements Observer<Event> {
     public ScrollPane scrollPane;
     public VBox scrollVBox = new VBox();
     public AnchorPane scrollAnchorPane;
+    public AnchorPane AnchorPaneRoot;
     ArrayList<HBox> listaBox = new ArrayList<>();
 
     ObservableList<Utilizator> modelUserRequests = FXCollections.observableArrayList();
@@ -70,6 +74,8 @@ public class UserViewController implements Observer<Event> {
     //        NewMessageEvent MSEvent = (NewMessageEvent) event;
 
             handleConversationLoad(null);
+          Platform.runLater(() -> scrollPane.setVvalue(1.0));
+
     //        chatBox.appendText(MSEvent.getNewMessage()+"\n");
      //       chatBox.setScrollTop(Double.MAX_VALUE);
         }
@@ -135,6 +141,9 @@ public class UserViewController implements Observer<Event> {
         modelUserFriends.setAll(service.findAllFriends(utilizator.getId()));
         modelUserRequests.setAll(service.findAllUsersFiltered(numePrenumeFiltru));
 
+        AnchorPaneRoot.setStyle("-fx-background: #2e3131");
+        //scrollVBox.setStyle("-fx-background-color: transparent");
+       // scrollPane.setStyle("-fx-background-image: url(starry.jpg)");
     }
     @FXML
     public void initialize(){
@@ -149,6 +158,9 @@ public class UserViewController implements Observer<Event> {
         scrollVBox.setSpacing(5);
         scrollPane.setContent(scrollVBox);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+
+
 
 
 
@@ -177,8 +189,6 @@ public class UserViewController implements Observer<Event> {
     }
     public void handleConversationLoad(MouseEvent event) {
 
-
-
         if(!friendsList.getSelectionModel().isEmpty()) {
             conversationPane.setVisible(true);
          //   chatBox.clear();
@@ -188,6 +198,9 @@ public class UserViewController implements Observer<Event> {
             currentFriend = friend;
             friendUsername.setText(friend.getFirstName() + " " + friend.getLastName());
             List<Message> mesaje = service.getMessages(utilizator.getId(), friend.getId());
+             currentReplyLabel=null;
+             defaultLabelStyle="";
+             currentMessageID = -1L;
 
             mesaje.forEach(mesaj -> {
                 HBox HBoxCurrent = new HBox();
@@ -196,9 +209,21 @@ public class UserViewController implements Observer<Event> {
                 if (mesaj.getFromID().equals(utilizator.getId()))
                 {//    chatBox.appendText(utilizator.getLastName() + ": " + mesaj.getMessage() + "\n");
                     HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
+                    HBoxCurrent.setStyle("-fx-background-color: transparent");
                     Label currentLabel = new Label( mesaj.getMessage() );
+                    if(mesaj.getReply()!=null)
+                        System.out.println(mesaj.getReply().getMessage());
+                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #085c4c;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
 
-                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #d27514;  -fx-text-fill: #000000;   -fx-background-radius: 10;");
+                    currentLabel.setOnMousePressed((MouseEvent M) -> {
+                        if(M.getButton().equals(MouseButton.SECONDARY))
+                         {
+                             handleReplySelected(currentLabel, mesaj);
+                            // currentLabel.setStyle("-fx-font-size: 20px; -fx-background-color: #052d25;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                         }
+
+                    });
+
                     currentLabel.setWrapText(true);
                     HBoxCurrent.getChildren().addAll( spacer, currentLabel);
                     HBoxCurrent.setAlignment(Pos.CENTER_RIGHT);
@@ -210,13 +235,25 @@ public class UserViewController implements Observer<Event> {
                     //chatBox.appendText(currentFriend.getLastName() + ": " + mesaj.getMessage() + "\n");
                     HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
                     Label currentLabel = new Label( mesaj.getMessage());
-                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #eada6d;  -fx-text-fill: #000000;   -fx-background-radius: 10;");
+                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #511212;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                    currentLabel.setOnMousePressed((MouseEvent M) -> {
+                        if(M.getButton().equals(MouseButton.SECONDARY))
+                        {
+                            handleReplySelected(currentLabel, mesaj);
+                            //currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #2c0909;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                        }
+
+                    });
+                    if(mesaj.getReply()!=null)
+                        System.out.println(mesaj.getReply().getMessage());
                     currentLabel.setWrapText(true);
+                    HBoxCurrent.setStyle("-fx-background-color: transparent");
                     HBoxCurrent.getChildren().addAll(currentLabel, spacer);
                     scrollVBox.getChildren().add(HBoxCurrent);
                 }
             });
 
+           // scrollPane.setVvalue(1.0);
           //  chatBox.setScrollTop(Double.MAX_VALUE);
 
         }
@@ -233,6 +270,31 @@ public class UserViewController implements Observer<Event> {
 //        hboxtest.getChildren().addAll(  testLabel2,spacer1);
     }
 
+
+    Label currentReplyLabel=null;
+    String defaultLabelStyle="";
+    Long currentMessageID=-1L;
+    private void handleReplySelected(Label currentLabel, Message mesaj) {
+        if(currentReplyLabel != null)
+        {
+            currentReplyLabel.setStyle(defaultLabelStyle);
+        }
+
+        if(currentLabel.equals(currentReplyLabel))
+            {
+                 currentReplyLabel=null;
+                 defaultLabelStyle="";
+                 currentMessageID=-1L;
+                 return;
+            }
+        currentReplyLabel = currentLabel;
+        defaultLabelStyle = currentLabel.getStyle();
+        currentMessageID = mesaj.getId();
+
+        currentReplyLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #5c0855;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+        System.out.println(currentMessageID);
+    }
+
     public void handleSend(ActionEvent event) {
         String mesajDeTrimis = sendTextArea.getText();
         sendTextArea.clear();
@@ -243,6 +305,7 @@ public class UserViewController implements Observer<Event> {
                 add(Long.toString(utilizator.getId()));
                 add(Long.toString(currentFriend.getId()));
                 add(mesajDeTrimis);
+                add(Long.toString(currentMessageID));
             }});
         } catch (Exception e) {
             throw new RuntimeException(e); //Not hapenning

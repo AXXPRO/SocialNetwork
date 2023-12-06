@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class ServiceMessage extends AbstractService<Long, Message> {
 
@@ -24,21 +25,24 @@ public class ServiceMessage extends AbstractService<Long, Message> {
         String msg;
         LocalDateTime date = LocalDateTime.now();
 
-        //ID, FROM, TO, MESAJ ,DATA
+        //ID, FROM, TO, MESAJ ,
 
 
 
         idFrom = Long.valueOf(list.get(0));
         msg = list.get(2);
-
+        Long replyID = Long.valueOf( list.get(3));
         ArrayList<Long> longIDS = new ArrayList<>();
         String[] strSplit =  list.get(1).split(" ");
         for (String s : strSplit) {
             longIDS.add(Long.valueOf(s));
 
         }
-        Message M = new Message(-1L, idFrom ,longIDS, msg,date);
-
+        Optional<Message> MReply =repo.findOne(replyID);
+        Message M;
+        if(MReply.isEmpty())
+         M = new Message(-1L, idFrom ,longIDS, msg,date,null);
+        else { M = new Message(-1L, idFrom ,longIDS, msg,date,MReply.get()); }
         if(repo.save(M).isPresent())
             throw new UtilizatorExceptions("Nu s-a putut adauga!\n");
        return  null;

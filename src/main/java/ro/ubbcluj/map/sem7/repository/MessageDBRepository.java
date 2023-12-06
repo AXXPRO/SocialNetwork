@@ -25,6 +25,8 @@ public class MessageDBRepository implements Repository<Long, Message>{
 
     @Override
     public Optional<Message> findOne(Long longID) {
+        if(longID.equals(-1L))
+            return Optional.empty();
         Message M;
         ArrayList<Long> toIDS = new ArrayList<>();
         try(Connection connection = DriverManager.getConnection(url, username, password);
@@ -49,7 +51,7 @@ public class MessageDBRepository implements Repository<Long, Message>{
                 receiverID = resultSet.getLong("idTo");
                 toIDS.add(receiverID);
                 LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
-                M = new Message(longID,senderID,toIDS,mesaj,date);
+                M = new Message(longID,senderID,toIDS,mesaj,date,null);
                 while(resultSet.next()) {
                     receiverID = resultSet.getLong("idTo");
                     toIDS.add(receiverID);
@@ -78,7 +80,7 @@ public class MessageDBRepository implements Repository<Long, Message>{
         try(Connection connection = DriverManager.getConnection(url, username, password);
             PreparedStatement statement = connection.prepareStatement("insert into message(mesaj) VALUES (?)RETURNING id");
             PreparedStatement statement2 = connection.prepareStatement("insert into \"messageSent\"" +
-                    "(\"idFrom\", \"idTo\", date, \"idMessage\") VALUES (?,?,?,?) ");
+                    "(\"idFrom\", \"idTo\", date, \"idMessage\", replyid) VALUES (?,?,?,?, ?) ");
 
         ) {
             statement.setString(1, entity.getMessage());
@@ -89,6 +91,11 @@ public class MessageDBRepository implements Repository<Long, Message>{
                 statement2.setLong(1, entity.getFromID());
                 statement2.setTimestamp(3,Timestamp.valueOf(entity.getDateTime()));
                 statement2.setLong(4, id);
+                if(entity.getReply() == null)
+                    statement2.setNull(5, Types.BIGINT);
+                else {
+                    statement2.setLong(5, entity.getReply().getId());
+                }
                 entity.getToIDS().forEach(IDFrom -> {
                     try {
                         statement2.setLong(2,IDFrom);
@@ -123,7 +130,7 @@ public class MessageDBRepository implements Repository<Long, Message>{
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("select M.id as id, MS.\"idFrom\" as idFrom, " +
-                     " MS.\"idTo\" as idTo, MS.date as date, M.mesaj as mesaj from \"messageSent\" MS FULL JOIN" +
+                     " MS.\"idTo\" as idTo, MS.date as date, M.mesaj as mesaj, MS.replyid as replyid from \"messageSent\" MS FULL JOIN" +
                      " message M on MS.\"idMessage\" = M.id where (\"idFrom\" = ? and \"idTo\" = ?) or (\"idFrom\" = ? and \"idTo\" = ?) order by MS.date" );
 
         ) {
@@ -141,9 +148,29 @@ public class MessageDBRepository implements Repository<Long, Message>{
                 Long idTo = resultSet.getLong("idTo");
                 LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
                 String mesaj = resultSet.getString("mesaj");
+                Long idReply = resultSet.getLong("replyid");
 
-                Message M = new Message(id,idFrom,new ArrayList<>(){{add(idTo);}},mesaj,date);
-               messages.add(M);
+
+                Message M;
+                if(idReply != 0)
+                {
+                    for ( Message mesajPanaAcum : messages) {
+                        if(mesajPanaAcum.getId().equals(idReply))
+                        {
+                             M = new Message(id,idFrom,new ArrayList<>(){{add(idTo);}},mesaj,date,mesajPanaAcum);
+                            messages.add(M);
+                            break;
+                        }
+
+                    }
+
+                }
+                else {
+                    M = new Message(id,idFrom,new ArrayList<>(){{add(idTo);}},mesaj,date,null);
+                    messages.add(M);
+                }
+
+
 
             }
             return messages;

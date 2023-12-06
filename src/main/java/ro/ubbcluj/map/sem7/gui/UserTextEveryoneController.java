@@ -96,6 +96,7 @@ public class UserTextEveryoneController  implements Observer<Event> {
                 add(Long.toString(utilizator.getId()));
                 add(IDSString.toString());
                 add(mesaj);
+                add(Long.toString(-1));
             }});
         } catch (Exception e) {
             throw new RuntimeException(e); //Not hapenning

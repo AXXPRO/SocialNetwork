@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserViewController">
+<AnchorPane fx:id="AnchorPaneRoot" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ro.ubbcluj.map.sem7.gui.UserViewController">
    <children>
       <SplitPane dividerPositions="0.10014340344168259" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0">
         <items>
@@ -37,7 +37,7 @@
                               <Image url="C:\Users\Gabi\IdeaProjects\sem7\png-transparent-computer-icons-logout-angle-text-black-thumbnail.png" />
                            </image></ImageView>
                      </graphic></Button>
-              
+
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

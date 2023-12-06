@@ -11,12 +11,13 @@ public class Message extends Entity<Long>{
     LocalDateTime dateTime;
     Message reply;
 
-    public Message(Long aLong, Long fromID, ArrayList<Long> toIDS, String message, LocalDateTime dateTime) {
+    public Message(Long aLong, Long fromID, ArrayList<Long> toIDS, String message, LocalDateTime dateTime, Message reply) {
         super(aLong);
         this.fromID = fromID;
         this.toIDS = toIDS;
         this.message = message;
         this.dateTime = dateTime;
+        this.reply = reply;
     }
 
     @Override
