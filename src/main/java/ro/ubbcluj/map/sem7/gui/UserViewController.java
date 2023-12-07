@@ -141,7 +141,7 @@ public class UserViewController implements Observer<Event> {
         modelUserFriends.setAll(service.findAllFriends(utilizator.getId()));
         modelUserRequests.setAll(service.findAllUsersFiltered(numePrenumeFiltru));
 
-        AnchorPaneRoot.setStyle("-fx-background: #2e3131");
+        AnchorPaneRoot.setStyle("-fx-background: #757a7a");
         //scrollVBox.setStyle("-fx-background-color: transparent");
        // scrollPane.setStyle("-fx-background-image: url(starry.jpg)");
     }
@@ -211,8 +211,7 @@ public class UserViewController implements Observer<Event> {
                     HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
                     HBoxCurrent.setStyle("-fx-background-color: transparent");
                     Label currentLabel = new Label( mesaj.getMessage() );
-                    if(mesaj.getReply()!=null)
-                        System.out.println(mesaj.getReply().getMessage());
+
                     currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #085c4c;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
 
                     currentLabel.setOnMousePressed((MouseEvent M) -> {
@@ -225,6 +224,22 @@ public class UserViewController implements Observer<Event> {
                     });
 
                     currentLabel.setWrapText(true);
+                    if(mesaj.getReply()!=null)
+                        { Label currentReplyLabel = new Label( mesaj.getReply().getMessage() );
+                            currentReplyLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: transparent;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                            HBox ReplyHbox = new HBox();
+                            ReplyHbox.setPrefWidth(HBoxCurrent.getPrefWidth());
+                            currentReplyLabel.setWrapText(true);
+
+
+                           ReplyHbox.setAlignment(Pos.CENTER_RIGHT);
+                           // System.out.println(mesaj.getReply().getMessage());
+                            Region spacer2= new Region();
+                            spacer2.setMinWidth(scrollPane.getWidth()/2);
+                          ReplyHbox.getChildren().addAll(spacer2, currentReplyLabel);
+                          scrollVBox.getChildren().add(ReplyHbox);
+                        }
+
                     HBoxCurrent.getChildren().addAll( spacer, currentLabel);
                     HBoxCurrent.setAlignment(Pos.CENTER_RIGHT);
 
@@ -235,7 +250,7 @@ public class UserViewController implements Observer<Event> {
                     //chatBox.appendText(currentFriend.getLastName() + ": " + mesaj.getMessage() + "\n");
                     HBoxCurrent.setPrefWidth(scrollPane.getWidth()-20);
                     Label currentLabel = new Label( mesaj.getMessage());
-                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #511212;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                    currentLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: #342f2f;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
                     currentLabel.setOnMousePressed((MouseEvent M) -> {
                         if(M.getButton().equals(MouseButton.SECONDARY))
                         {
@@ -244,11 +259,26 @@ public class UserViewController implements Observer<Event> {
                         }
 
                     });
-                    if(mesaj.getReply()!=null)
-                        System.out.println(mesaj.getReply().getMessage());
+
                     currentLabel.setWrapText(true);
                     HBoxCurrent.setStyle("-fx-background-color: transparent");
-                    HBoxCurrent.getChildren().addAll(currentLabel, spacer);
+                    if(mesaj.getReply()!=null)
+                        {
+                            Label currentReplyLabel = new Label( mesaj.getReply().getMessage() );
+                            currentReplyLabel.setStyle(" -fx-font-size: 20px; -fx-background-color: transparent;  -fx-text-fill: #ffffff;   -fx-background-radius: 10;");
+                            HBox ReplyHbox = new HBox();
+                            ReplyHbox.setPrefWidth(HBoxCurrent.getPrefWidth());
+                            currentReplyLabel.setWrapText(true);
+
+
+                            // System.out.println(mesaj.getReply().getMessage());
+                            Region spacer2= new Region();
+                            spacer2.setMinWidth(scrollPane.getWidth()/2);
+                            ReplyHbox.getChildren().addAll(currentReplyLabel, spacer2);
+                            scrollVBox.getChildren().add(ReplyHbox);
+                        }
+                   HBoxCurrent.getChildren().addAll(currentLabel, spacer);
+
                     scrollVBox.getChildren().add(HBoxCurrent);
                 }
             });
