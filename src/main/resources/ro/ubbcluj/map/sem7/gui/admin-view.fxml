@@ -82,6 +82,10 @@
                                     <Font name="Arial Bold" size="13.0" />
                                  </font>
                               </Button>
+                              <Button fx:id="leftArrowButton" layoutX="373.0" mnemonicParsing="false" onAction="#handleLeftArrow" prefHeight="25.0" prefWidth="25.0" text="&lt;" />
+                              <Button fx:id="rightArrowButton" layoutX="399.0" mnemonicParsing="false" onAction="#handleRightArrow" text="&gt;" />
+                              <TextField fx:id="elementsPerPageArea" layoutX="438.0" layoutY="2.0" onKeyTyped="#handlePageNumberChange" prefHeight="25.0" prefWidth="29.0" />
+                              <Label layoutX="474.0" layoutY="6.0" text="Elements per page" />
 
                                     </children>
                                 </AnchorPane>

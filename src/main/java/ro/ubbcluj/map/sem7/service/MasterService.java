@@ -5,6 +5,8 @@ import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observable;
 import ro.ubbcluj.map.sem7.observer.Observer;
+import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ public class MasterService implements Observable<Event> {
       notifyObservers(new UserChangeEvent(UserChanges.ADD));
       return util;
     }
+    @Deprecated
+    //Not in actual USE!
     public ArrayList<Utilizator> findAllUsersMatching(String firstName, String lastName) throws UtilizatorExceptions{
         return serviceUtilizator.findAllMatching(firstName,lastName);
     }
@@ -194,6 +198,12 @@ public class MasterService implements Observable<Event> {
        return serviceUtilizator.findAllFiltered(numePrenumeFilter);
     }
 
+    public Page<Utilizator> findAllUsersFiltered(String numePrenumeFilter, Pageable pageable) {
+        return serviceUtilizator.findAllFiltered( numePrenumeFilter, pageable);
+    }
+
+
+
     public Utilizator tryLogin(String mail, String password) throws UtilizatorExceptions {
         return serviceUtilizator.tryLogin(mail, password);
 
@@ -201,6 +211,9 @@ public class MasterService implements Observable<Event> {
 
     public List<Message> getMessages(Long id1, Long id2){
         return serviceMessage.getMessages(id1,id2);
+    }
+    public List<Message> getMessages(Long id1, Long id2, Pageable pageable){
+        return serviceMessage.getMessages(id1,id2,pageable);
     }
 
     public void emitChange(Event eventType) {

@@ -3,6 +3,8 @@ package ro.ubbcluj.map.sem7.service;
 import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.paging.Pageable;
+import ro.ubbcluj.map.sem7.repository.MessageDBPagingRepository;
 import ro.ubbcluj.map.sem7.repository.MessageDBRepository;
 
 import java.time.LocalDateTime;
@@ -13,8 +15,8 @@ import java.util.Optional;
 
 public class ServiceMessage extends AbstractService<Long, Message> {
 
-    MessageDBRepository repo;
-    public ServiceMessage(MessageDBRepository repo) {
+    MessageDBPagingRepository repo;
+    public ServiceMessage(MessageDBPagingRepository repo) {
         super(repo);
         this.repo = repo;
     }
@@ -53,6 +55,11 @@ public class ServiceMessage extends AbstractService<Long, Message> {
 
         return repo.getMessages(ID1, ID2);
     }
+    public List<Message> getMessages(Long ID1, Long ID2, Pageable pageable){
+
+        return repo.getMessages(ID1, ID2,pageable);
+    }
+
 
 
 }

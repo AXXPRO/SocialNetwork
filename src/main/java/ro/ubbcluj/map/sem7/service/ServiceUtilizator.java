@@ -4,6 +4,8 @@ import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.UtiliziatorFactory;
 import ro.ubbcluj.map.sem7.domain.exceptions.FriendshipException;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.Pageable;
 import ro.ubbcluj.map.sem7.repository.Repository;
 import ro.ubbcluj.map.sem7.repository.UserDBPagingRepository;
 import ro.ubbcluj.map.sem7.repository.UserDBRepository;
@@ -25,6 +27,7 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
     public ServiceUtilizator(UserDBPagingRepository repo) {
         super(repo);
         this.repo = repo;
+
         repo.findAll().forEach(util-> {
             if(util.getId() > LatestID)
                 LatestID = util.getId();
@@ -66,6 +69,7 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
      * @return a list of users matching the provided firstName and lastName
      * @throws UtilizatorExceptions if none match
      */
+    @Deprecated
     public ArrayList<Utilizator> findAllMatching(String firstName, String lastName) throws UtilizatorExceptions {
         ArrayList<Utilizator> list = new ArrayList<>();
         //Iterable<Utilizator> listAll = repo.findAll();
@@ -245,9 +249,14 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
         return super.delete(ID);
     }
 
+
     public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
        return repo.findAllFiltered(numePrenumeFilter);
     }
+    public Page<Utilizator> findAllFiltered(String numePrenumeFilter, Pageable pageable) {
+        return repo.findAllFiltered(pageable,numePrenumeFilter);
+    }
+
 
     public Utilizator tryLogin(String mail, String password) throws UtilizatorExceptions {
 

@@ -36,7 +36,7 @@ public class LoginViewController implements Observer<Event> {
     public void update(Event event) {
 
         if(event.getEventType() == EventType.LOGIN)
-        initModel();
+            initModel();
     }
 
     public void setMasterService(MasterService servicePrimit, Stage stagePrimit) {

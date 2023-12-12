@@ -9,4 +9,5 @@ public interface Page<E> {
     Stream<E> getContent();
 
 
+    Pageable previousPageable();
 }

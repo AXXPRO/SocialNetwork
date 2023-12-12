@@ -38,10 +38,10 @@ public class UI {
         String username = "postgres";
 
         Repository<Long, Utilizator> UsersRepository = new UserDBPagingRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password,validator);
-        Repository<Long, Message> MessageRepository = new MessageDBRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password);
+        Repository<Long, Message> MessageRepository = new MessageDBPagingRepository("jdbc:postgresql://localhost:5432/socialnetwork", username, password);
         Repository<Tuple<Long, Long>, Prietenie> FriendshipRepository = new FriendshipDBRepository("jdbc:postgresql://localhost:5432/socialnetwork",username,password) ;
         this.service = new MasterService(new ServiceUtilizator((UserDBPagingRepository) UsersRepository), new ServicePrietenie((FriendshipDBRepository) FriendshipRepository)
-        ,new ServiceMessage((MessageDBRepository) MessageRepository));
+        ,new ServiceMessage((MessageDBPagingRepository) MessageRepository));
 
     }
 

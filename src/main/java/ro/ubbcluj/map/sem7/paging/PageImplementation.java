@@ -24,4 +24,9 @@ public class PageImplementation<T> implements Page<T> {
     public Stream<T> getContent() {
         return this.content;
     }
+
+    @Override
+    public Pageable previousPageable() {
+        return new PageableImplementation(this.pageable.getPageNumber() - 1, this.pageable.getPageSize());
+    }
 }

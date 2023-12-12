@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observer;
+import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.PageImplementation;
+import ro.ubbcluj.map.sem7.paging.PageableImplementation;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
 import java.io.IOException;
@@ -28,6 +31,10 @@ public class AdminController implements Observer<Event> {
     public SplitPane adminPane;
 
     public Label LoginLabel;
+    public Button logoutButton;
+    public Button rightArrowButton;
+    public Button leftArrowButton;
+    public TextField elementsPerPageArea;
     String numePrenumeFilter ="";
     public TextField searchField;
     MasterService service;
@@ -45,6 +52,13 @@ public class AdminController implements Observer<Event> {
     TableColumn<Utilizator,String> tableColumnPreunume;
     @FXML
     TableColumn<Utilizator,String > tableColumnMail;
+
+    private final int pageNumber=0;
+    private int pageSize= 5;
+
+    Page<Utilizator> pageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumber, pageSize) ,null);
+
+
 
 
     public void setMasterService(MasterService servicePrimit, Stage stagePrimit) {
@@ -64,14 +78,30 @@ public class AdminController implements Observer<Event> {
         tableColumnPreunume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
         tableColumnMail.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("mail"));
         tableView.setItems(model);
+
+
     }
 
     private void initModel() {
-        List<Utilizator> usersFiltered = service.findAllUsersFiltered(numePrenumeFilter);
+        this.pageImplementation = service.findAllUsersFiltered(numePrenumeFilter, this.pageImplementation.getPageable());
+        List<Utilizator> users = this.pageImplementation.getContent().toList();
 
-        model.setAll(usersFiltered);
+
+
+        if(users.isEmpty())
+        {
+            this.pageImplementation = service.findAllUsersFiltered(numePrenumeFilter, this.pageImplementation.previousPageable());
+            users = this.pageImplementation.getContent().toList();
+        }
+
+
+
+        model.setAll(users);
+
 //        loginPane.setVisible(true);
     }
+
+
 
     public void handleSearchMessage(KeyEvent actionEvent){
       //  tableView.setVisible(!tableView.isVisible());
@@ -145,37 +175,38 @@ public class AdminController implements Observer<Event> {
 
     }
 
-//    public void handleLogInLabel(MouseEvent event)
-//    {
-//        handleLogInButton(null);
-//    }
-//    public void handleLogInButton(ActionEvent event) {
-//
-//        String mail, password;
-//        mail = textFieldMail.getText();
-//        password = textFieldPassword.getText();
-//        if(mail.equals("admin@fakemail.com"))
-//        {
-//            //VERY UNSAFE, NOT FOR ACTUAL USE, JUST TO NOT OVERCOMPLICATE FOR NOW
-//            if(password.equals("admin"))
-//            {
-//                //ADMIN PRIVS
-//                adminPane.setVisible(true);
-//                loginPane.setVisible(false);
-//            }
-//            else {
-//                errorLabel.setVisible(true);
-//            }
-//        }
-//        else {
-//
-//            Long ID = service.tryLogin(mail, password);
-//            if (ID < 0) {
-//                errorLabel.setVisible(true);
-//                return;
-//            }
-//            loginPane.setVisible(false);
-//
-//            }
-//    }
+    public void handleLeftArrow(ActionEvent actionEvent) {
+        if(this.pageImplementation.getPageable().getPageNumber() == 0)
+            return;
+        this.pageImplementation = new PageImplementation<Utilizator>(this.pageImplementation.previousPageable(), null);
+
+        initModel();
+    }
+
+    public void handleRightArrow(ActionEvent actionEvent) {
+
+
+        this.pageImplementation = new PageImplementation<Utilizator>(this.pageImplementation.nextPageable(), null);
+        initModel();
+    }
+
+
+    public void handlePageNumberChange(KeyEvent actionEvent) {
+        String nrPagesString = elementsPerPageArea.getText();
+        int nrPages;
+        try {
+            nrPages = Integer.parseInt(nrPagesString);
+
+
+            pageSize = nrPages;
+        }
+        catch (Exception E)
+        {
+            pageSize = 5;
+        }
+
+        this.pageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumber, pageSize),null);
+        initModel();
+
+    }
 }
