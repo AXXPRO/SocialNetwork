@@ -32,9 +32,9 @@ public class HelloApplication extends Application {
         Page<Utilizator> utilizatorPage = UsersRepository.findAll(pageable);
       // utilizatorPage.getContent().forEach(System.out::println);
 
-        Repository<Tuple<Long, Long>, Prietenie> FriendshipDBRepository = new FriendshipDBRepository("jdbc:postgresql://localhost:5432/socialnetwork",username,"***REMOVED***") ;
+        Repository<Tuple<Long, Long>, Prietenie> FriendshipDBRepository = new FriendshipDBPagingRepository("jdbc:postgresql://localhost:5432/socialnetwork",username,"***REMOVED***") ;
         Repository<Long, Message> MessageDBRepository = new MessageDBPagingRepository("jdbc:postgresql://localhost:5432/socialnetwork",username,"***REMOVED***") ;
-        service = new MasterService(new ServiceUtilizator(UsersRepository), new ServicePrietenie((FriendshipDBRepository) FriendshipDBRepository), new ServiceMessage((MessageDBPagingRepository)  MessageDBRepository  ));
+        service = new MasterService(new ServiceUtilizator(UsersRepository), new ServicePrietenie((FriendshipDBPagingRepository) FriendshipDBRepository), new ServiceMessage((MessageDBPagingRepository)  MessageDBRepository  ));
 
 //        try {
 //            service.addMessage(new ArrayList<>(){{

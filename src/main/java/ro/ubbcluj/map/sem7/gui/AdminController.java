@@ -196,12 +196,15 @@ public class AdminController implements Observer<Event> {
         int nrPages;
         try {
             nrPages = Integer.parseInt(nrPagesString);
-
+            if(nrPages < 0)
+                throw  new Exception("No negatives");
 
             pageSize = nrPages;
         }
         catch (Exception E)
         {
+            if(pageSize == 5)
+                return;
             pageSize = 5;
         }
 

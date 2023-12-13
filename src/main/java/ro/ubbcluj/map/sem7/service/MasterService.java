@@ -6,6 +6,7 @@ import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observable;
 import ro.ubbcluj.map.sem7.observer.Observer;
 import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.PageImplementation;
 import ro.ubbcluj.map.sem7.paging.Pageable;
 
 import java.util.ArrayList;
@@ -212,7 +213,7 @@ public class MasterService implements Observable<Event> {
     public List<Message> getMessages(Long id1, Long id2){
         return serviceMessage.getMessages(id1,id2);
     }
-    public List<Message> getMessages(Long id1, Long id2, Pageable pageable){
+    public Page<Message> getMessages(Long id1, Long id2, Pageable pageable){
         return serviceMessage.getMessages(id1,id2,pageable);
     }
 
@@ -234,6 +235,21 @@ public class MasterService implements Observable<Event> {
 
         return utilizatori;
     }
+
+    public Page<Utilizator> findAllFriendRequests(Long id, Pageable page){
+        List<Prietenie> listaPrieteni = servicePrietenie.findAllFriendRequests(id,page).getContent().toList();
+        List<Utilizator> utilizatori = new ArrayList<>();
+        //VERY SLOW
+        listaPrieteni.forEach(prietenie -> {
+            try {
+                utilizatori.add(serviceUtilizator.findOne(prietenie.getId().getLeft()));
+            } catch (Exception e) {
+                throw new RuntimeException(e); //Not hapenning
+            }
+        });
+
+        return new PageImplementation<>(page, utilizatori.stream());
+    }
     public List<Utilizator> findAllFriends(Long id) {
 
 
@@ -248,6 +264,21 @@ public class MasterService implements Observable<Event> {
         });
 
         return utilizatori;
+    }
+
+    public Page<Utilizator> findAllFriends(Long id, Pageable page)
+    {
+        List<Prietenie> listaPrieteni = servicePrietenie.findAllFriends(id,page).getContent().toList();
+        ArrayList<Utilizator> utilizatori = new ArrayList<>();
+        listaPrieteni.forEach(prietenie -> {
+            try {
+                utilizatori.add(serviceUtilizator.findOne(prietenie.getId().getRight()));
+            } catch (Exception e) {
+                throw new RuntimeException(e); //Not hapenning
+            }
+        });
+
+        return new PageImplementation<>(page, utilizatori.stream());
     }
 
     public void acceptRequest(Long id, Long id1) {

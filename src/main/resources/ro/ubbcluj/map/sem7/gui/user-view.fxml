@@ -42,13 +42,16 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <Pane fx:id="contactsPane" layoutX="-1.0" prefHeight="535.0" prefWidth="798.0">
+                  <Pane fx:id="contactsPane" prefHeight="535.0" prefWidth="798.0">
                      <children>
                         <SplitPane dividerPositions="0.24865350089766605" prefHeight="434.0" prefWidth="798.0">
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <ListView fx:id="friendsList" onMouseClicked="#handleConversationLoad" prefHeight="430.0" prefWidth="195.0" stylesheets="@userList.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <ListView fx:id="friendsList" onMouseClicked="#handleConversationLoad" prefHeight="382.0" prefWidth="194.0" stylesheets="@userList.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <Button layoutX="2.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleFriendsLeftArrow" text="&lt;" />
+                                    <Button layoutX="168.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleFriendsRightArrow" text="&gt;" />
+                                    <TextField fx:id="friendshipNumberTextArea" layoutX="29.0" layoutY="392.0" onKeyTyped="#handleFriendsNumberTextArea" prefHeight="25.0" prefWidth="137.0" promptText="No. of friends shown" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="594.0">
@@ -91,16 +94,23 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <GridPane fx:id="gridPane" layoutX="9.0" layoutY="66.0" prefHeight="30.0" prefWidth="233.0" vgap="5.0">
-                                      <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                      </columnConstraints>
-                                    </GridPane>
                                     <Label layoutX="3.0" layoutY="14.0" text="Cereri de prietenie">
                                        <font>
                                           <Font size="30.0" />
                                        </font>
                                     </Label>
+                                    <ScrollPane fx:id="friendshipScrollPane" layoutX="26.0" layoutY="66.0" prefHeight="292.0" prefWidth="200.0">
+                                       <content>
+                                          <GridPane fx:id="gridPane" prefHeight="30.0" prefWidth="221.0" vgap="5.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                          </GridPane>
+                                       </content>
+                                    </ScrollPane>
+                                    <Button layoutX="26.0" layoutY="377.0" mnemonicParsing="false" onAction="#handleRequestsLeftArrow" text="&lt;" />
+                                    <Button layoutX="201.0" layoutY="377.0" mnemonicParsing="false" onAction="#handleRequestsRightArrow" text="&gt;" />
+                                    <TextField fx:id="requestsNumberTextArea" layoutX="52.0" layoutY="377.0" onKeyTyped="#handleRequestsNumberTextArea" promptText="Number of friends shown" />
                                  </children></AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="277.0" prefWidth="329.0">
                                  <children>

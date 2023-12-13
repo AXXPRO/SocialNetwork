@@ -3,6 +3,9 @@ package ro.ubbcluj.map.sem7.service;
 import ro.ubbcluj.map.sem7.domain.Prietenie;
 import ro.ubbcluj.map.sem7.domain.Tuple;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
+import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.Pageable;
+import ro.ubbcluj.map.sem7.repository.FriendshipDBPagingRepository;
 import ro.ubbcluj.map.sem7.repository.FriendshipDBRepository;
 import ro.ubbcluj.map.sem7.repository.Repository;
 
@@ -11,8 +14,8 @@ import java.util.List;
 
 public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prietenie>{
 
-    FriendshipDBRepository repo;
-    public ServicePrietenie(FriendshipDBRepository repo) {
+    FriendshipDBPagingRepository repo;
+    public ServicePrietenie(FriendshipDBPagingRepository repo) {
         super(repo);
         this.repo = repo;
 
@@ -73,9 +76,21 @@ public class ServicePrietenie extends AbstractService<Tuple<Long,Long>, Prieteni
       return   repo.findAllFriends(id);
     }
 
+    public Page<Prietenie> findAllFriends(Long id, Pageable page)
+    {
+        return repo.findAllFriends(id, page);
+    }
+
+
     public List<Prietenie> findAllFriendRequests(Long id) {
         return repo.getPendingFriends(id);
     }
+
+    public Page<Prietenie> findAllFriendRequests(Long id, Pageable page)
+    {
+        return repo.getPendingFriends(id, page);
+    }
+
 //    public void executeQuerry(String querry){
 //        repo.executeQuerry(querry);
 //    }

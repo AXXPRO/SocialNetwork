@@ -2,6 +2,7 @@ package ro.ubbcluj.map.sem7.repository;
 
 import ro.ubbcluj.map.sem7.domain.Message;
 import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.PageImplementation;
 import ro.ubbcluj.map.sem7.paging.Pageable;
 import ro.ubbcluj.map.sem7.paging.PagingRepository;
 
@@ -22,7 +23,7 @@ public class MessageDBPagingRepository extends MessageDBRepository implements Pa
         return null;
     }
 
-    public List<Message> getMessages(Long id1, Long id2, Pageable pageable) {
+    public Page<Message> getMessages(Long id1, Long id2, Pageable pageable) {
         ArrayList<Message> messages = new ArrayList<>();
         ArrayList<Message> messagesTemp = new ArrayList<>();
 
@@ -81,7 +82,7 @@ public class MessageDBPagingRepository extends MessageDBRepository implements Pa
 
             }
 
-            return messages;
+            return new PageImplementation<>(pageable, messages.stream()) ;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

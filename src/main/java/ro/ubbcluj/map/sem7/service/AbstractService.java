@@ -32,9 +32,10 @@ public abstract class AbstractService<ID, E extends Entity<ID>> implements Servi
      */
     @Override
     public E findOne(ID id) throws Exception {
-        if(repo.findOne(id).isEmpty())
+        var entity = repo.findOne(id);
+        if(entity.isEmpty())
             throw  new Exception("No entity was found!\n");
-        return repo.findOne(id).get();
+        return entity.get();
     }
 
     /**

@@ -27,6 +27,8 @@ public class PageImplementation<T> implements Page<T> {
 
     @Override
     public Pageable previousPageable() {
+        if(this.pageable.getPageNumber() == 0)
+            return new PageableImplementation(this.pageable.getPageNumber() , this.pageable.getPageSize());
         return new PageableImplementation(this.pageable.getPageNumber() - 1, this.pageable.getPageSize());
     }
 }

@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -15,7 +14,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ro.ubbcluj.map.sem7.domain.Message;
@@ -23,6 +21,8 @@ import ro.ubbcluj.map.sem7.domain.Utilizator;
 import ro.ubbcluj.map.sem7.domain.exceptions.UtilizatorExceptions;
 import ro.ubbcluj.map.sem7.events.*;
 import ro.ubbcluj.map.sem7.observer.Observer;
+import ro.ubbcluj.map.sem7.paging.Page;
+import ro.ubbcluj.map.sem7.paging.PageImplementation;
 import ro.ubbcluj.map.sem7.paging.PageableImplementation;
 import ro.ubbcluj.map.sem7.service.MasterService;
 
@@ -54,6 +54,9 @@ public class UserViewController implements Observer<Event> {
     public VBox scrollVBox = new VBox();
     public AnchorPane scrollAnchorPane;
     public AnchorPane AnchorPaneRoot;
+    public ScrollPane friendshipScrollPane;
+    public TextField requestsNumberTextArea;
+    public TextField friendshipNumberTextArea;
     ArrayList<HBox> listaBox = new ArrayList<>();
 
     ObservableList<Utilizator> modelUserRequests = FXCollections.observableArrayList();
@@ -66,6 +69,17 @@ public class UserViewController implements Observer<Event> {
     public Label labelUserName;
     private String numePrenumeFiltru="";
     private int numberOfMessages=5;
+
+    private final int pageNumberRequests =0;
+    private int pageSizeRequests = 5;
+
+    Page<Utilizator> requestsPageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumberRequests, pageSizeRequests) ,null);
+
+    private final int pageNumberFriendships =0;
+    private int pageSizeFriendShips = 5;
+
+    Page<Utilizator> friendshipPageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumberFriendships, pageSizeFriendShips) ,null);
+
 
     boolean scrolledAlready = false;
 
@@ -111,10 +125,23 @@ public class UserViewController implements Observer<Event> {
 
     }
     private void loadFriendshipRequests(){
+
         listaBox.clear();
         gridPane.getChildren().clear();
 
-        var frens = service.findAllFriendRequests(utilizator.getId());
+        friendshipScrollPane.setContent(gridPane);
+
+       List<Utilizator> frens;
+        this.requestsPageImplementation = service.findAllFriendRequests(utilizator.getId(), requestsPageImplementation.getPageable());
+        frens = this.requestsPageImplementation.getContent().toList();
+
+
+
+        if(frens.isEmpty())
+        {
+            this.requestsPageImplementation =service.findAllFriendRequests(utilizator.getId(), requestsPageImplementation.previousPageable());
+            frens = this.requestsPageImplementation.getContent().toList();
+        }
         frens.forEach(fren -> {
                     var box = (new HBox());
                     box.setSpacing(5);
@@ -139,12 +166,36 @@ public class UserViewController implements Observer<Event> {
 
                 }
         );
+       Platform.runLater(()  -> friendshipScrollPane.setHvalue(1.0D));
     }
 
     private void initModel() {
         //Called multiple times
         labelUserName.setText("Hello " + utilizator.getFirstName() + " " + utilizator.getLastName() + "!");
-        modelUserFriends.setAll(service.findAllFriends(utilizator.getId()));
+
+        //this.page = service.findAllFriends(utilizator.getId(),this.requestsPageImplementation.getPageable()).getContent().toList();
+
+
+        this.friendshipPageImplementation = service.findAllFriends(utilizator.getId(),this.friendshipPageImplementation.getPageable());
+
+        List<Utilizator> users = this.friendshipPageImplementation.getContent().toList();
+
+
+
+        if(users.isEmpty())
+        {
+            this.friendshipPageImplementation = service.findAllFriends(utilizator.getId(),this.friendshipPageImplementation.previousPageable());
+            users = this.friendshipPageImplementation.getContent().toList();
+        }
+
+
+
+        modelUserFriends.setAll(users);
+
+
+    //    modelUserFriends.setAll(service.findAllFriends(utilizator.getId(),this.friendshipPageImplementation.getPageable()).getContent().toList());
+
+
         modelUserRequests.setAll(service.findAllUsersFiltered(numePrenumeFiltru));
 
         AnchorPaneRoot.setStyle("-fx-background: #757a7a");
@@ -203,9 +254,7 @@ public class UserViewController implements Observer<Event> {
     }
 
 
-    public void handleScroll(ActionEvent event){
 
-    }
 
     public void handelLogOut(ActionEvent event) {
         userStage.close();
@@ -245,7 +294,7 @@ public class UserViewController implements Observer<Event> {
             Utilizator friend = friendsList.getSelectionModel().getSelectedItem();
             currentFriend = friend;
             friendUsername.setText(friend.getFirstName() + " " + friend.getLastName());
-            List<Message> mesaje = service.getMessages(utilizator.getId(), friend.getId(),new PageableImplementation(0, this.numberOfMessages));
+            List<Message> mesaje = service.getMessages(utilizator.getId(), friend.getId(),new PageableImplementation(0, this.numberOfMessages)).getContent().toList();
             currentReplyLabel=null;
             defaultLabelStyle="";
             currentMessageID = -1L;
@@ -335,6 +384,11 @@ public class UserViewController implements Observer<Event> {
             // scrollPane.setVvalue(1.0);
             //  chatBox.setScrollTop(Double.MAX_VALUE);
 
+        }
+
+        else {
+
+            conversationPane.setVisible(false);
         }
 
 
@@ -464,6 +518,94 @@ public class UserViewController implements Observer<Event> {
                 sendRequestButton.setDisable(false);
             }
         }
+
+    }
+    @FunctionalInterface
+    interface Function {
+        void apply();
+    }
+
+
+    public void handleRequestsNumberTextArea(KeyEvent keyEvent) {
+        String nrPagesString = requestsNumberTextArea.getText();
+        int nrPages;
+        try {
+            nrPages = Integer.parseInt(nrPagesString);
+            if(nrPages < 0)
+                throw  new Exception("No negatives");
+
+            pageSizeRequests = nrPages;
+        }
+        catch (Exception E)
+        {
+            if(pageSizeRequests == 5)
+                return;
+            pageSizeRequests = 5;
+
+        }
+
+        this.requestsPageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumberRequests, pageSizeRequests),null);
+
+
+       loadFriendshipRequests();
+
+    }
+    public void handleRequestsLeftArrow(ActionEvent actionEvent) {
+        if(this.requestsPageImplementation.getPageable().getPageNumber() == 0)
+            return;
+        this.requestsPageImplementation = new PageImplementation<Utilizator>(this.requestsPageImplementation.previousPageable(), null);
+
+        loadFriendshipRequests();
+    }
+
+    public void handleRequestsRightArrow(ActionEvent actionEvent) {
+
+
+        this.requestsPageImplementation = new PageImplementation<Utilizator>(this.requestsPageImplementation.nextPageable(), null);
+        loadFriendshipRequests();
+    }
+
+    public void handleFriendsLeftArrow(ActionEvent actionEvent) {
+        if(this.friendshipPageImplementation.getPageable().getPageNumber() == 0)
+            return;
+        this.friendshipPageImplementation = new PageImplementation<Utilizator>(this.friendshipPageImplementation.previousPageable(), null);
+
+        initModel();
+        handleConversationLoad(null);
+    }
+
+    public void handleFriendsRightArrow(ActionEvent actionEvent) {
+
+
+        this.friendshipPageImplementation = new PageImplementation<Utilizator>(this.friendshipPageImplementation.nextPageable(), null);
+        initModel();
+        handleConversationLoad(null);
+    }
+
+    public void handleFriendsNumberTextArea(KeyEvent keyEvent) {
+
+        String nrPagesString = friendshipNumberTextArea.getText();
+        int nrPages;
+        try {
+            nrPages = Integer.parseInt(nrPagesString);
+            if(nrPages < 0)
+                throw  new Exception("No negatives");
+
+            pageSizeFriendShips = nrPages;
+        }
+        catch (Exception E)
+        {
+            if(pageSizeFriendShips == 5)
+                return;
+            pageSizeFriendShips = 5;
+
+        }
+
+        this.friendshipPageImplementation = new PageImplementation<Utilizator>( new PageableImplementation(pageNumberFriendships, pageSizeFriendShips),null);
+
+        initModel();
+
+        handleConversationLoad(null);
 
     }
 }
