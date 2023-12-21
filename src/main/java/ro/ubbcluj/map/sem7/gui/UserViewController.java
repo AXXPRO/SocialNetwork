@@ -577,8 +577,11 @@ public class UserViewController implements Observer<Event> {
     public void handleFriendsRightArrow(ActionEvent actionEvent) {
 
 
+        var currentPage = this.friendshipPageImplementation.getPageable().getPageNumber();
         this.friendshipPageImplementation = new PageImplementation<Utilizator>(this.friendshipPageImplementation.nextPageable(), null);
         initModel();
+        if(this.friendshipPageImplementation.getPageable().getPageNumber() == currentPage)
+            return;
         handleConversationLoad(null);
     }
 

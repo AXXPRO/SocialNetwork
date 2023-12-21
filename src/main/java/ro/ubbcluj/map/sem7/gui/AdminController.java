@@ -164,7 +164,13 @@ public class AdminController implements Observer<Event> {
 
     @Override
     public void update(Event userChangeEvent) {
-        initModel();
+        if(userChangeEvent.getEventType() == EventType.USER)
+        {
+            this.pageImplementation = new PageImplementation<>(new PageableImplementation(0, this.pageImplementation.getPageable().getPageSize()),
+                    this.pageImplementation.getContent());
+            initModel();
+        }
+
     }
 
     public void handleLogOut(ActionEvent event) {
