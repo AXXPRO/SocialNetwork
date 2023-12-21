@@ -155,6 +155,26 @@ public class UserDBRepository implements Repository<Long, Utilizator> {
 //    }
 
 
+
+    public boolean findOneEmail(String email) {
+        try(Connection connection = DriverManager.getConnection(url, username, password);
+            PreparedStatement statement = connection.prepareStatement("select * from users " +
+                    "where mail = ?");
+
+        ) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return false;
+    }
+
     public List<Utilizator> findAllFiltered(String numePrenumeFilter) {
 
         ArrayList<Utilizator> users = new ArrayList<>();

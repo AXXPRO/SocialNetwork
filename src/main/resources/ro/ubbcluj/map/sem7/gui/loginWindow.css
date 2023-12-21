@@ -18,3 +18,9 @@
 
 
 }
+
+.registerButton{
+   -fx-background-color: black;
+    -fx-text-fill: white;
+   -fx-font: 14 px;
+}

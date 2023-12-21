@@ -29,6 +29,7 @@ public class LoginViewController implements Observer<Event> {
     public TextField textFieldMail;
     public Button logInButton;
     public Label errorLabel;
+    public Button registerButton;
     MasterService service;
 
     Stage loginStage;
@@ -55,6 +56,7 @@ public class LoginViewController implements Observer<Event> {
 //        tableColumnPreunume.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
 //        tableColumnMail.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("mail"));
 //        tableView.setItems(model);
+
     }
 
     public void initModel() {
@@ -163,6 +165,36 @@ public class LoginViewController implements Observer<Event> {
 
             dialogStage.show();
             loginStage.hide();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showRegisterView() {
+        try {
+            // create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("registerForm.fxml"));
+
+
+            AnchorPane root = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Register Window");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            //dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            RegisterController registerController = loader.getController();
+            registerController.setMasterService(service, dialogStage);
+
+
+            dialogStage.show();
+          //  loginStage.hide();
 
         } catch (IOException e) {
             e.printStackTrace();

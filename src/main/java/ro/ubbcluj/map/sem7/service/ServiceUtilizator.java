@@ -62,6 +62,11 @@ public class ServiceUtilizator extends AbstractService<Long, Utilizator> {
         return null;
     }
 
+    public boolean findOneEmail(String mail){
+
+        return repo.findOneEmail(mail);
+    }
+
     /**
      *
      * @param firstName

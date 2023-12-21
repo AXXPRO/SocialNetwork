@@ -303,6 +303,11 @@ public class MasterService implements Observable<Event> {
         }
     }
 
+    public boolean findOneEmail(String mail){
+
+        return serviceUtilizator.findOneEmail(mail);
+    }
+
     //returns prietenie de la id la id1
     public Prietenie findFriendship(Long id, Long id1) {
         try {
